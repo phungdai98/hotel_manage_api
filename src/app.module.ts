@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { Bill, Customer, DetailBill, DetailCustomerAt, DetailOrderTicket, DetailPriceRoom, DetailPriceService, DetailSale, DetailService, DetailStatus, KindRoom, OrderTicket, Part, RankRoom, Rent, RentTicket, Room, Sale, Service, StatusRoom, TypeRoom, User } from './model';
 
 @Module({
   imports: [
@@ -23,6 +24,9 @@ import { ConfigModule } from '@nestjs/config';
       autoLoadEntities: true,
       synchronize: true, // Lưu ý: Chỉ bật true khi dev (tự động tạo bảng)
     }),
+    TypeOrmModule.forFeature([
+      Bill, Customer, DetailBill, DetailCustomerAt, DetailOrderTicket, DetailPriceRoom, DetailPriceService, DetailSale, DetailService, DetailStatus, KindRoom, OrderTicket, Part, RankRoom, Rent, RentTicket, Room, Sale, Service, StatusRoom, TypeRoom, User
+    ]),
     AuthModule,
     UsersModule,
   ],
