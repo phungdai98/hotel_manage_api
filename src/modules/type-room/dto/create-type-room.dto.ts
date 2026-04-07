@@ -1,1 +1,3 @@
-export class CreateTypeRoomDto {}
+export class CreateTypeRoomDto {
+    name: string;
+}

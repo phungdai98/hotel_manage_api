@@ -9,26 +9,66 @@ export class RoomController {
 
   @Post()
   create(@Body() createRoomDto: CreateRoomDto) {
-    return this.roomService.create(createRoomDto);
+    try {
+      const result = this.roomService.create(createRoomDto);
+      if (!result) {
+        return { message: 'Room not found' };
+      }
+      return result;
+    } catch (error) {
+      return error;
+    }
   }
 
   @Get()
   findAll() {
-    return this.roomService.findAll();
+    try {
+      const result = this.roomService.findAll();
+      if (!result) {
+        return { message: 'Room not found' };
+      }
+      return result;
+    } catch (error) {
+      return error;
+    }
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.roomService.findOne(+id);
+    try {
+      const result = this.roomService.findOne(id);
+      if (!result) {
+        return { message: 'Room not found' };
+      }
+      return result;
+    } catch (error) {
+      return error;
+    }
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto) {
-    return this.roomService.update(+id, updateRoomDto);
+    try {
+      const result = this.roomService.update(id, updateRoomDto);
+      if (!result) {
+        return { message: 'Room not found' };
+      }
+      return result;
+    } catch (error) {
+      return error;
+    }
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.roomService.remove(+id);
+    try {
+      const result = this.roomService.remove(id);
+      if (!result) {
+        return { message: 'Room not found' };
+      }
+      return result;
+    } catch (error) {
+      return error;
+    }
   }
 }

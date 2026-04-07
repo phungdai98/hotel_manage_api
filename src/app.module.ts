@@ -25,9 +25,8 @@ import { RentModule } from './modules/rent/rent.module';
 import { RentTicketModule } from './modules/rent-ticket/rent-ticket.module';
 import { RoomModule } from './modules/room/room.module';
 import { SaleModule } from './modules/sale/sale.module';
-import { ServiceModule } from './service/service.module';
-import { StatusRoomModule } from './modules/status-room/status-room.module';
 import { ServiceHotelModule } from './modules/service-hotel/service-hotel.module';
+import { StatusRoomModule } from './modules/status-room/status-room.module';
 
 @Module({
   imports: [
@@ -70,9 +69,8 @@ import { ServiceHotelModule } from './modules/service-hotel/service-hotel.module
     RentTicketModule,
     RoomModule,
     SaleModule,
-    ServiceModule,
-    StatusRoomModule,
     ServiceHotelModule,
+    StatusRoomModule,
   ],
   controllers: [AppController],
   providers: [AppService],

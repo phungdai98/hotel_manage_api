@@ -1,1 +1,5 @@
-export class CreateRoomDto {}
+export class CreateRoomDto {
+    name: string;
+    floor: number;
+    rankRoomId: string;
+}
