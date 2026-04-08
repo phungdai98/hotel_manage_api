@@ -11,54 +11,22 @@ export class UserController extends BaseController {
     }
 
     @Post()
-    create(@Body() createUserDto: CreateUserDto) {
-        try {
-            const user = this.userService.create(createUserDto);
-            if (!user) {
-                return { message: 'User not found' };
-            }
-            return user;
-        } catch (error) {
-            return error;
-        }
+    async create(@Body() createUserDto: CreateUserDto) {
+        return this.userService.create(createUserDto);
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-        try {
-            const user = this.userService.update(id, updateUserDto);
-            if (!user) {
-                return { message: 'User not found' };
-            }
-            return user;
-        } catch (error) {
-            return error;
-        }
+    async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+        return this.userService.update(id, updateUserDto);
     }
 
     @Get(':email')
-    findOne(@Param('email') email: string) {
-        try {
-            const user = this.userService.findOne(email);
-            if (!user) {
-                return { message: 'User not found' };
-            }
-            return user;
-        } catch (error) {
-            return error;
-        }
+    async findOne(@Param('email') email: string) {
+        return this.userService.findOne(email);
     }
 
     @Get()
-    findAll() {
-        try {
-            const users = this.userService.findAll();
-            if (!users) {
-                return { message: 'Users not found' };
-            }
-            return users;
-        } catch (error) {
-            return error;
-        }
+    async findAll() {
+        return this.userService.findAll();
     }
 }

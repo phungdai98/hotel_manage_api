@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateRankRoomDto } from './dto/create-rank-room.dto';
 import { UpdateRankRoomDto } from './dto/update-rank-room.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,10 +14,11 @@ export class RankRoomService {
   ) {}
   async create(createRankRoomDto: CreateRankRoomDto) {
     try {
-      const result = await this.rankRoomRepository.save(createRankRoomDto);
+      const rankRoom = this.rankRoomRepository.create(createRankRoomDto);
+      const result = await this.rankRoomRepository.save(rankRoom);
       return result;
     } catch (error) {
-      throw error;
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -28,7 +29,7 @@ export class RankRoomService {
       });
       return result.map((item) => RankRoomResponse.fromEntity(item));
     } catch (error) {
-      throw error;
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -40,7 +41,7 @@ export class RankRoomService {
       });
       return result ? RankRoomResponse.fromEntity(result) : null;
     } catch (error) {
-      throw error;
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -48,7 +49,7 @@ export class RankRoomService {
     try {
       const rankRoom = await this.rankRoomRepository.findOne({ where: { id: id } });
       if (!rankRoom) {
-        throw new BadRequestException(`Hạng phòng (ID: ${id}) không tồn tại trong hệ thống!`);
+        throw new BadRequestException(`Rank room (ID: ${id}) not found!`);
       }
       rankRoom.urlImage = updateRankRoomDto.urlImage || rankRoom.urlImage;
       rankRoom.limitPeople = updateRankRoomDto.limitPeople || rankRoom.limitPeople;
@@ -57,7 +58,7 @@ export class RankRoomService {
       const result = await this.rankRoomRepository.save(rankRoom);
       return RankRoomResponse.fromEntity(result);
     } catch (error) {
-      throw error;
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -66,7 +67,7 @@ export class RankRoomService {
       const result = await this.rankRoomRepository.delete(id);
       return result;
     } catch (error) {
-      throw error;
+      throw new InternalServerErrorException(error.message);
     }
   }
 }

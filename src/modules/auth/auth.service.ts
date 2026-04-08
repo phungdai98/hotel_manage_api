@@ -7,9 +7,9 @@ export class AuthService {
     constructor(private userService: UsersService, private jwtService: JwtService) { }
 
     async signIn(email: string, pass: string) {
-        const user = await this.userService.findOne(email);
+        const user = await this.userService.findOneWithPassword(email);
         if (user?.password !== pass) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException('Tên đăng nhập hoặc mật khẩu không chính xác');
         }
         const payload = { email: user.email, sub: user.id };
         const {

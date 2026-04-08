@@ -13,67 +13,27 @@ export class KindRoomController extends BaseController {
   //Single Room , Double Room, Twin Room, Triple Room, Family Room, Connecting Room, Studio
 
   @Post()
-  create(@Body() createKindRoomDto: CreateKindRoomDto) {
-    try {
-      const result = this.kindRoomService.create(createKindRoomDto);
-      if (!result) {
-        return { message: 'Kind room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async create(@Body() createKindRoomDto: CreateKindRoomDto) {
+    return this.kindRoomService.create(createKindRoomDto);
   }
 
   @Get()
-  findAll() {
-    try {
-      const result = this.kindRoomService.findAll();
-      if (!result) {
-        return { message: 'Kind room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async findAll() {
+    return this.kindRoomService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    try {
-      const result = this.kindRoomService.findOne(id);
-      if (!result) {
-        return { message: 'Kind room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async findOne(@Param('id') id: string) {
+    return this.kindRoomService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateKindRoomDto: UpdateKindRoomDto) {
-    try {
-      const result = this.kindRoomService.update(id, updateKindRoomDto);
-      if (!result) {
-        return { message: 'Kind room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async update(@Param('id') id: string, @Body() updateKindRoomDto: UpdateKindRoomDto) {
+    return this.kindRoomService.update(id, updateKindRoomDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    try {
-      const result = this.kindRoomService.remove(id);
-      if (!result) {
-        return { message: 'Kind room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async remove(@Param('id') id: string) {
+    return this.kindRoomService.remove(id);
   }
 }

@@ -11,67 +11,27 @@ export class TypeRoomController extends BaseController {
   }
   //Standard Room, Superior Room, Deluxe Room, Suite Room, Presidential Suite
   @Post()
-  create(@Body() createTypeRoomDto: CreateTypeRoomDto) {
-    try {
-      const result = this.typeRoomService.create(createTypeRoomDto);
-      if (!result) {
-        return { message: 'Type room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async create(@Body() createTypeRoomDto: CreateTypeRoomDto) {
+    return this.typeRoomService.create(createTypeRoomDto);
   }
 
   @Get()
-  findAll() {
-    try {
-      const result = this.typeRoomService.findAll();
-      if (!result) {
-        return { message: 'Type room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async findAll() {
+    return this.typeRoomService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    try {
-      const result = this.typeRoomService.findOne(id);
-      if (!result) {
-        return { message: 'Type room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async findOne(@Param('id') id: string) {
+    return this.typeRoomService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTypeRoomDto: UpdateTypeRoomDto) {
-    try {
-      const result = this.typeRoomService.update(id, updateTypeRoomDto);
-      if (!result) {
-        return { message: 'Type room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async update(@Param('id') id: string, @Body() updateTypeRoomDto: UpdateTypeRoomDto) {
+    return this.typeRoomService.update(id, updateTypeRoomDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    try {
-      const result = this.typeRoomService.remove(id);
-      if (!result) {
-        return { message: 'Type room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async remove(@Param('id') id: string) {
+    return this.typeRoomService.remove(id);
   }
 }

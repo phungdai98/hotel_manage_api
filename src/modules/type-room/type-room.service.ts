@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateTypeRoomDto } from './dto/create-type-room.dto';
 import { UpdateTypeRoomDto } from './dto/update-type-room.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,7 +17,7 @@ export class TypeRoomService {
       const result = await this.typeRoomRepository.save(createTypeRoomDto);
       return TypeRoomResponse.fromEntity(result);
     } catch (error) {
-      throw error;
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -26,7 +26,7 @@ export class TypeRoomService {
       const result = await this.typeRoomRepository.find();
       return result.map((item) => TypeRoomResponse.fromEntity(item));
     } catch (error) {
-      throw error;
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -35,7 +35,7 @@ export class TypeRoomService {
       const result = await this.typeRoomRepository.findOne({ where: { id: id } });
       return result ? TypeRoomResponse.fromEntity(result) : null;
     } catch (error) {
-      throw error;
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -48,7 +48,7 @@ export class TypeRoomService {
       typeRoom.name = updateTypeRoomDto.name || typeRoom.name;
       return this.typeRoomRepository.save(typeRoom);
     } catch (error) {
-      throw error;
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -57,7 +57,7 @@ export class TypeRoomService {
       const result = await this.typeRoomRepository.delete(id);
       return result;
     } catch (error) {
-      throw error;
+      throw new InternalServerErrorException(error.message);
     }
   }
 }

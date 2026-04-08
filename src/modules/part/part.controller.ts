@@ -8,27 +8,27 @@ export class PartController {
   constructor(private readonly partService: PartService) {}
 
   @Post()
-  create(@Body() createPartDto: CreatePartDto) {
+  async create(@Body() createPartDto: CreatePartDto) {
     return this.partService.create(createPartDto);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.partService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.partService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return this.partService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePartDto: UpdatePartDto) {
-    return this.partService.update(+id, updatePartDto);
+  async update(@Param('id') id: string, @Body() updatePartDto: UpdatePartDto) {
+    return this.partService.update(id, updatePartDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.partService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return this.partService.remove(id);
   }
 }

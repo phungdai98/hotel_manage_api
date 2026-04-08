@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Part, User } from '../../model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserResponse } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -14,47 +15,58 @@ export class UsersService {
         private partRepository: Repository<Part>,
     ) {}
 
-    async findOne(email: string): Promise<User | null> {
+    async findOne(email: string): Promise<UserResponse | null> {
         try {
-            const user = await this.userRepository.findOne({ where: { email } });
+            const user = await this.userRepository.findOne({ where: { email }, relations: ['part'] });
             if (!user) {
                 return null;
             }
-            return user;
+            return new UserResponse(user);
         } catch (error) {
             console.log(error);
             return null;
         }
     }
 
-    async findAll(): Promise<User[] | null> {
+    async findOneWithPassword(email: string): Promise<User | null> {
+        try {
+            const user = await this.userRepository.findOne({ where: { email } });
+            return user || null;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
+    async findAll(): Promise<UserResponse[] | null> {
         try {
             const users = await this.userRepository.find();
             if (!users) {
                 return null;
             }
-            return users;
+            return users.map((user) => new UserResponse(user));
         } catch (error) {
             console.log(error);
             return null;
         }
     }
 
-    async create(createUserDto: CreateUserDto): Promise<User | null> {
+    async create(createUserDto: CreateUserDto): Promise<UserResponse | null> {
         try {
             const part = await this.partRepository.existsBy({ id: createUserDto.partId });
             if (!part) {
                 throw new BadRequestException(`Phòng ban (ID: ${createUserDto.partId}) không tồn tại trong hệ thống!`);
             }
             const user = this.userRepository.create(createUserDto);
-            return this.userRepository.save(user);
+            const savedUser = await this.userRepository.save(user);
+            return new UserResponse(savedUser);
         } catch (error) {
             console.log(error);
             return null;
         }
     }
 
-    async update(email: string, updateUserDto: UpdateUserDto): Promise<User | null> {
+    async update(email: string, updateUserDto: UpdateUserDto): Promise<UserResponse | null> {
         try {
             const user = await this.userRepository.findOne({ where: { email } });
             if (!user) {
@@ -74,7 +86,8 @@ export class UsersService {
             user.address = updateUserDto.address || user.address;
             user.role = updateUserDto.role || user.role;
             user.partId = updateUserDto.partId || user.partId;
-            return this.userRepository.save(user);
+            const updatedUser = await this.userRepository.save(user);
+            return new UserResponse(updatedUser);
         } catch (error) {
             console.log(error);
             return null;

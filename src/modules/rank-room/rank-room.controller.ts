@@ -11,67 +11,27 @@ export class RankRoomController extends BaseController {
   }
 
   @Post()
-  create(@Body() createRankRoomDto: CreateRankRoomDto) {
-    try {
-      const result = this.rankRoomService.create(createRankRoomDto);
-      if (!result) {
-        return { message: 'Rank room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async create(@Body() createRankRoomDto: CreateRankRoomDto) {
+    return this.rankRoomService.create(createRankRoomDto);
   }
 
   @Get()
-  findAll() {
-    try {
-      const result = this.rankRoomService.findAll();
-      if (!result) {
-        return { message: 'Rank room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async findAll() {
+    return this.rankRoomService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    try {
-      const result = this.rankRoomService.findOne(id);
-      if (!result) {
-        return { message: 'Rank room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async findOne(@Param('id') id: string) {
+    return this.rankRoomService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRankRoomDto: UpdateRankRoomDto) {
-    try {
-      const result = this.rankRoomService.update(id, updateRankRoomDto);
-      if (!result) {
-        return { message: 'Rank room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async update(@Param('id') id: string, @Body() updateRankRoomDto: UpdateRankRoomDto) {
+    return this.rankRoomService.update(id, updateRankRoomDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    try {
-      const result = this.rankRoomService.remove(id);
-      if (!result) {
-        return { message: 'Rank room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  async remove(@Param('id') id: string) {
+    return this.rankRoomService.remove(id);
   }
 }
