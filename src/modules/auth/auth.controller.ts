@@ -13,9 +13,6 @@ export class AuthController {
     async signIn(@Body() signInDto: RequestLogin) {
         try {
             const result = await this.authenService.signIn(signInDto.username, signInDto.password);
-            if (!result) {
-                return { message: 'User not found' };
-            }
             return result;
         } catch (error) {
             return error;

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { DetailBillService } from './detail-bill.service';
 import { CreateDetailBillDto } from './dto/create-detail-bill.dto';
 import { UpdateDetailBillDto } from './dto/update-detail-bill.dto';
@@ -18,17 +18,17 @@ export class DetailBillController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.detailBillService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.detailBillService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDetailBillDto: UpdateDetailBillDto) {
-    return this.detailBillService.update(+id, updateDetailBillDto);
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateDetailBillDto: UpdateDetailBillDto) {
+    return this.detailBillService.update(id, updateDetailBillDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.detailBillService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.detailBillService.remove(id);
   }
 }

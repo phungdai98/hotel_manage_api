@@ -1,1 +1,23 @@
-export class Customer {}
+import { Customer } from "src/model";
+
+export class CustomerResponse {
+    id: string;
+    idCard: string;
+    name: string;
+    gender: boolean;
+    phone: string;
+    address: string;
+    dateOfBirth: Date;
+    point: number;
+
+    constructor(data: Customer) {
+        this.id = data.id;
+        this.idCard = data.idCard;
+        this.name = data.name;
+        this.gender = data.gender;
+        this.phone = data.phone;
+        this.address = data.address;
+        this.dateOfBirth = data.dateOfBirth;
+        this.point = data.point;
+    }
+}

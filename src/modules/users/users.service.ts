@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Part, User } from '../../model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -19,12 +19,12 @@ export class UsersService {
         try {
             const user = await this.userRepository.findOne({ where: { email }, relations: ['part'] });
             if (!user) {
-                return null;
+                throw new BadRequestException(`Người dùng (Email: ${email}) không tồn tại trong hệ thống!`);
             }
             return new UserResponse(user);
         } catch (error) {
             console.log(error);
-            return null;
+            throw new InternalServerErrorException(error.message);
         }
     }
 
@@ -34,7 +34,7 @@ export class UsersService {
             return user || null;
         } catch (error) {
             console.log(error);
-            return null;
+            throw new InternalServerErrorException(error.message);
         }
     }
 
@@ -42,12 +42,12 @@ export class UsersService {
         try {
             const users = await this.userRepository.find();
             if (!users) {
-                return null;
+                throw new BadRequestException(`Người dùng không tồn tại trong hệ thống!`);
             }
             return users.map((user) => new UserResponse(user));
         } catch (error) {
             console.log(error);
-            return null;
+            throw new InternalServerErrorException(error.message);
         }
     }
 
@@ -62,15 +62,15 @@ export class UsersService {
             return new UserResponse(savedUser);
         } catch (error) {
             console.log(error);
-            return null;
+            throw new InternalServerErrorException(error.message);
         }
     }
 
-    async update(email: string, updateUserDto: UpdateUserDto): Promise<UserResponse | null> {
+    async update(id: string, updateUserDto: UpdateUserDto): Promise<UpdateResult | null> {
         try {
-            const user = await this.userRepository.findOne({ where: { email } });
+            const user = await this.userRepository.findOne({ where: { id } });
             if (!user) {
-                throw new BadRequestException(`Người dùng (Email: ${email}) không tồn tại trong hệ thống!`);
+                throw new BadRequestException(`Người dùng (ID: ${id}) không tồn tại trong hệ thống!`);
             }
             if (updateUserDto.partId) {
                 const part = await this.partRepository.existsBy({ id: updateUserDto.partId });
@@ -86,11 +86,24 @@ export class UsersService {
             user.address = updateUserDto.address || user.address;
             user.role = updateUserDto.role || user.role;
             user.partId = updateUserDto.partId || user.partId;
-            const updatedUser = await this.userRepository.save(user);
-            return new UserResponse(updatedUser);
+            const result = await this.userRepository.update(id, user);
+            return result;
         } catch (error) {
             console.log(error);
-            return null;
+            throw new InternalServerErrorException(error.message);
+        }
+    }
+
+    async remove(id: string): Promise<DeleteResult> {
+        try {
+            const user = await this.userRepository.findOne({ where: { id } });
+            if (!user) {
+                throw new NotFoundException(`Người dùng (ID: ${id}) không tồn tại trong hệ thống!`);
+            }
+            const result = await this.userRepository.delete(id);
+            return result;
+        } catch (error) {
+            throw new InternalServerErrorException(error.message);
         }
     }
 }

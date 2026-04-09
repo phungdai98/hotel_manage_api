@@ -1,24 +1,25 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinColumn, Unique } from "typeorm";
 import { OrderTicket } from "./orderTicket.entity";
 import { Part } from "./part.entity";
 import { RentTicket } from "./rentTicket.entity";
 import { Bill } from "./bill.entity";
 
 @Entity('user')
+@Unique(['idCard', 'email', 'phone'])
 export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({name: 'id_card'})
+    @Column({name: 'id_card', unique: true})
     idCard: string;
 
     @Column({name: 'name'})
     name: string;
 
-    @Column({name: 'email'})
+    @Column({name: 'email', unique: true})
     email: string;
 
-    @Column({name: 'phone'})
+    @Column({name: 'phone', unique: true})
     phone: string;
 
     @Column({name: 'address'})
