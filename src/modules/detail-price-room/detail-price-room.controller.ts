@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { DetailPriceRoomService } from './detail-price-room.service';
 import { CreateDetailPriceRoomDto } from './dto/create-detail-price-room.dto';
 import { UpdateDetailPriceRoomDto } from './dto/update-detail-price-room.dto';
@@ -18,17 +18,17 @@ export class DetailPriceRoomController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.detailPriceRoomService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.detailPriceRoomService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDetailPriceRoomDto: UpdateDetailPriceRoomDto) {
-    return this.detailPriceRoomService.update(+id, updateDetailPriceRoomDto);
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateDetailPriceRoomDto: UpdateDetailPriceRoomDto) {
+    return this.detailPriceRoomService.update(id, updateDetailPriceRoomDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.detailPriceRoomService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.detailPriceRoomService.remove(id);
   }
 }

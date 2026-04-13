@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { DetailServiceService } from './detail-service.service';
 import { CreateDetailServiceDto } from './dto/create-detail-service.dto';
 import { UpdateDetailServiceDto } from './dto/update-detail-service.dto';
@@ -18,17 +18,17 @@ export class DetailServiceController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.detailServiceService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.detailServiceService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDetailServiceDto: UpdateDetailServiceDto) {
-    return this.detailServiceService.update(+id, updateDetailServiceDto);
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateDetailServiceDto: UpdateDetailServiceDto) {
+    return this.detailServiceService.update(id, updateDetailServiceDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.detailServiceService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.detailServiceService.remove(id);
   }
 }

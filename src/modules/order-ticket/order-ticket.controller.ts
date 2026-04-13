@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { OrderTicketService } from './order-ticket.service';
 import { CreateOrderTicketDto } from './dto/create-order-ticket.dto';
 import { UpdateOrderTicketDto } from './dto/update-order-ticket.dto';
@@ -18,17 +18,17 @@ export class OrderTicketController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.orderTicketService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.orderTicketService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderTicketDto: UpdateOrderTicketDto) {
-    return this.orderTicketService.update(+id, updateOrderTicketDto);
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateOrderTicketDto: UpdateOrderTicketDto) {
+    return this.orderTicketService.update(id, updateOrderTicketDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.orderTicketService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.orderTicketService.remove(id);
   }
 }
