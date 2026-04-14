@@ -75,16 +75,14 @@ export class DetailStatusService {
   async findBusyRoomIds(dateCheckIn: string, dateCheckOut: string): Promise<string[]> {
     // 1. Convert string sang Date và chuẩn hóa về 12:00 UTC để khớp với dữ liệu trong DB
     const checkIn = new Date(dateCheckIn);
-    checkIn.setUTCHours(12, 0, 0, 0);
 
     const checkOut = new Date(dateCheckOut);
-    checkOut.setUTCHours(12, 0, 0, 0);
 
     // 2. Thực hiện truy vấn với đối tượng Date đã chuẩn hóa
     const busyDetailStatuses = await this.detailStatusRepository.find({
       where: {
-        dateStart: LessThan(checkOut as any),
-        dateEnd: MoreThan(checkIn as any),
+        dateStart: LessThan(checkOut),
+        dateEnd: MoreThan(checkIn),
       },
       select: { roomId: true },
     });
