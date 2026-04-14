@@ -2,15 +2,19 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 import { CreateRankRoomDto } from './dto/create-rank-room.dto';
 import { UpdateRankRoomDto } from './dto/update-rank-room.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RankRoom } from 'src/model';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { RankRoom, Room } from 'src/model';
+import { FindOptionsWhere, In, MoreThanOrEqual, Not, Repository } from 'typeorm';
 import { RankRoomResponse } from './entities/rank-room.entity';
+import { DetailStatusService } from '../detail-status/detail-status.service';
 
 @Injectable()
 export class RankRoomService {
   constructor(
     @InjectRepository(RankRoom)
     private rankRoomRepository: Repository<RankRoom>,
+    @InjectRepository(Room)
+    private roomRepository: Repository<Room>,
+    private readonly detailStatusService: DetailStatusService,
   ) {}
   async create(createRankRoomDto: CreateRankRoomDto) {
     try {
@@ -27,7 +31,7 @@ export class RankRoomService {
       const result = await this.rankRoomRepository.find({
         relations: ['kindRoom', 'typeRoom'],
       });
-      return result.map((item) => RankRoomResponse.fromEntity(item));
+      return result.map((item) => new RankRoomResponse(item));
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
@@ -39,7 +43,7 @@ export class RankRoomService {
         where: { id: id },
         relations: ['kindRoom', 'typeRoom'],
       });
-      return result ? RankRoomResponse.fromEntity(result) : null;
+      return result ? new RankRoomResponse(result) : null;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
@@ -56,7 +60,7 @@ export class RankRoomService {
       rankRoom.kindRoomId = updateRankRoomDto.kindRoomId || rankRoom.kindRoomId;
       rankRoom.typeRoomId = updateRankRoomDto.typeRoomId || rankRoom.typeRoomId;
       const result = await this.rankRoomRepository.save(rankRoom);
-      return RankRoomResponse.fromEntity(result);
+      return new RankRoomResponse(result);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
@@ -76,5 +80,47 @@ export class RankRoomService {
       where: { limitPeople: MoreThanOrEqual(quantity) },
       relations: ['kindRoom', 'typeRoom'],
     });
+  }
+
+  async findAvailable(dateCheckIn: string, dateCheckOut: string, quantity: number): Promise<RankRoomResponse[]> {
+    try {
+      // 1. Lấy các hạng phòng thỏa mãn sức chứa
+      const rankRooms = await this.findByLimitPeople(quantity);
+      if (!rankRooms.length) return [];
+
+      // 2. Lấy danh sách ID các phòng đang bận
+      const busyRoomIds = await this.detailStatusService.findBusyRoomIds(dateCheckIn, dateCheckOut);
+
+      // 3. Lấy ra các phòng thuộc các hạng phòng trên và KHÔNG nằm trong danh sách bận
+      const roomWhereClause: FindOptionsWhere<Room> = {
+        rankRoomId: In(rankRooms.map((r) => r.id)),
+      };
+      if (busyRoomIds.length > 0) {
+        roomWhereClause.id = Not(In(busyRoomIds));
+      }
+
+      const rooms = await this.roomRepository.find({
+        where: roomWhereClause,
+      });
+
+      // 4. Nhóm kết quả theo Rank và trả về RankRoomResponse
+      return rankRooms
+        .map((rank) => {
+          const availableRooms = rooms.filter((r) => r.rankRoomId === rank.id);
+          return {
+            ...rank,
+            availableCount: availableRooms.length,
+            rooms: availableRooms.map(r => ({
+              id: r.id,
+              name: r.name,
+              floor: r.floor
+            })),
+          };
+        })
+        .filter((rank) => rank.availableCount > 0)
+        .map((rank) => new RankRoomResponse(rank as any));
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 }

@@ -10,32 +10,14 @@ export class RankRoomResponse {
   kindRoomName: string;
 
   constructor(
-    id: string,
-    urlImage: string,
-    limitPeople: number,
-    kindRoomId: string,
-    typeRoomId: string,
-    typeRoomName?: string,
-    kindRoomName?: string,
+    data: RankRoom ,
   ) {
-    this.id = id;
-    this.urlImage = urlImage;
-    this.limitPeople = limitPeople;
-    this.kindRoomId = kindRoomId;
-    this.typeRoomId = typeRoomId;
-    this.typeRoomName = typeRoomName || '';
-    this.kindRoomName = kindRoomName || '';
-  }
-
-  static fromEntity(entity: RankRoom): RankRoomResponse {
-    return new RankRoomResponse(
-      entity.id,
-      entity.urlImage,
-      entity.limitPeople,
-      entity.kindRoomId,
-      entity.typeRoomId,
-      entity?.typeRoom?.name,
-      entity?.kindRoom?.name,
-    );
+    this.id = data.id;
+    this.urlImage = data.urlImage;
+    this.limitPeople = data.limitPeople;
+    this.kindRoomId = data.kindRoomId;
+    this.typeRoomId = data.typeRoomId;
+    this.typeRoomName = data.typeRoom?.name || '';
+    this.kindRoomName = data.kindRoom?.name || '';
   }
 }

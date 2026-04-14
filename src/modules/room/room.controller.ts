@@ -36,18 +36,7 @@ export class RoomController extends BaseController {
     }
   }
 
-  @Get('available')
-  findAllByRank(
-    @Query('dateCheckIn') dateCheckIn: string,
-    @Query('dateCheckOut') dateCheckOut: string,
-    @Query('quantity') quantity: number,
-  ) {
-    try {
-      return this.roomService.findAllByRank(dateCheckIn, dateCheckOut, Number(quantity));
-    } catch (error) {
-      return error;
-    }
-  }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {

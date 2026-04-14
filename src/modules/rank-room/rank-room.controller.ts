@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { RankRoomService } from './rank-room.service';
 import { CreateRankRoomDto } from './dto/create-rank-room.dto';
 import { UpdateRankRoomDto } from './dto/update-rank-room.dto';
@@ -18,6 +18,15 @@ export class RankRoomController extends BaseController {
   @Get()
   async findAll() {
     return this.rankRoomService.findAll();
+  }
+
+  @Get('available')
+  async findAvailable(
+    @Query('dateCheckIn') dateCheckIn: string,
+    @Query('dateCheckOut') dateCheckOut: string,
+    @Query('quantity') quantity: number,
+  ) {
+    return this.rankRoomService.findAvailable(dateCheckIn, dateCheckOut, Number(quantity));
   }
 
   @Get(':id')

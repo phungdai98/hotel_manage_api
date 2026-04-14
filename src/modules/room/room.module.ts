@@ -9,8 +9,6 @@ import { DetailStatusModule } from '../detail-status/detail-status.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Room, RankRoom, DetailStatus]),
-    RankRoomModule,
-    DetailStatusModule,
   ],
   controllers: [RoomController],
   providers: [RoomService],
