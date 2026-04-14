@@ -13,11 +13,11 @@ export class DetailSale {
     @Column({name: 'ratio'})
     ratio: number;
 
-    @CreateDateColumn({name: 'created_at'})
-    createdAt: Date;
+    @CreateDateColumn({name: 'created_at', type: 'timestamp'})
+    createdAt: string;
 
-    @UpdateDateColumn({name: 'updated_at'})
-    updatedAt: Date;
+    @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
+    updatedAt: string;
 
     @Column({ name: 'sale_id' })
     saleId: string;

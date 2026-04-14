@@ -1,24 +1,24 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { OrderTicket } from "./orderTicket.entity";
 import { Room } from "./room.entity";
 import { StatusRoom } from "./statusRoom.entity";
-import { OrderTicket } from "./orderTicket.entity";
 
 @Entity('detail_status')
 export class DetailStatus {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({name: 'date_start'})
+    @Column({ name: 'date_start', type: 'timestamp' })
     dateStart: string;
 
-    @Column({name: 'date_end'})
+    @Column({ name: 'date_end', type: 'timestamp' })
     dateEnd: string;
 
-    @CreateDateColumn({name: 'created_at'})
-    createdAt: Date;
+    @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+    createdAt: string;
 
-    @UpdateDateColumn({name: 'updated_at'})
-    updatedAt: Date;
+    @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
+    updatedAt: string;
 
     @Column({ name: 'room_id' })
     roomId: string;

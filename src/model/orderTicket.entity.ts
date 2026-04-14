@@ -19,10 +19,10 @@ export class OrderTicket {
     @Column({name: 'status'})
     status: string;
 
-    @CreateDateColumn({name: 'created_at'})
-    createdAt: Date;
+    @CreateDateColumn({name: 'created_at', type: 'timestamp'})
+    createdAt: string;
 
-    @UpdateDateColumn({name: 'updated_at'})
+    @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
     updatedAt: Date;
 
     @OneToMany(() => DetailOrderTicket, (detailOrderTicket) => detailOrderTicket.orderTicket)

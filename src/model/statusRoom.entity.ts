@@ -9,11 +9,11 @@ export class StatusRoom {
     @Column({name: 'name'})
     name: string;
 
-    @CreateDateColumn({name: 'created_at'})
-    createdAt: Date;
+    @CreateDateColumn({name: 'created_at', type: 'timestamp'})
+    createdAt: string;
 
-    @UpdateDateColumn({name: 'updated_at'})
-    updatedAt: Date;
+    @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
+    updatedAt: string;
 
     @OneToMany(() => DetailStatus, (detailStatus) => detailStatus.statusRoom)
     detailStatuses: DetailStatus[];

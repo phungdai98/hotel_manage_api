@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
@@ -31,6 +31,23 @@ export class RoomController extends BaseController {
         return { message: 'Room not found' };
       }
       return result;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  @Get('available')
+  findAllByRank(
+    @Query('dateCheckIn') dateCheckIn: string,
+    @Query('dateCheckOut') dateCheckOut: string,
+    @Query('quantity') quantity: number,
+  ) {
+    try {
+      return this.roomService.findAllByRank(
+        new Date(dateCheckIn),
+        new Date(dateCheckOut),
+        Number(quantity),
+      );
     } catch (error) {
       return error;
     }

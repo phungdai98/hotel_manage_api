@@ -1,4 +1,4 @@
-import { IsBoolean, IsDate, IsNumber, IsString } from "class-validator";
+import { IsBoolean, IsDateString, IsNumber, IsString } from "class-validator";
 
 export class CreateCustomerDto {
     @IsString()
@@ -16,8 +16,8 @@ export class CreateCustomerDto {
     @IsString()
     address: string;
 
-    @IsDate()
-    dateOfBirth: Date;
+    @IsDateString()
+    dateOfBirth: string;
 
     @IsNumber()
     point: number;

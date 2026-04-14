@@ -7,7 +7,7 @@ export class CustomerResponse {
     gender: boolean;
     phone: string;
     address: string;
-    dateOfBirth: Date;
+    dateOfBirth: string;
     point: number;
 
     constructor(data: Customer) {

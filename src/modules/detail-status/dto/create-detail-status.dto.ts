@@ -1,10 +1,10 @@
-import { IsString, IsUUID } from "class-validator";
+import { IsDateString, IsUUID } from "class-validator";
 
 export class CreateDetailStatusDto {
-    @IsString()
+    @IsDateString()
     dateStart: string;
 
-    @IsString()
+    @IsDateString()
     dateEnd: string;
 
     @IsUUID()

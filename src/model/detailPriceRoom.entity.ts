@@ -9,13 +9,13 @@ export class DetailPriceRoom {
     @Column({name: 'price'})
     price: number;
 
-    @Column({name: 'active_date'})
-    activeDate: Date;
+    @Column({name: 'active_date', type: 'timestamp'})
+    activeDate: string;
 
-    @CreateDateColumn({name: 'created_at'})
-    createdAt: Date;
+    @CreateDateColumn({name: 'created_at', type: 'timestamp'})
+    createdAt: string;
 
-    @UpdateDateColumn({name: 'updated_at'})
+    @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
     updatedAt: Date;
 
     @Column({ name: 'rank_room_id' })

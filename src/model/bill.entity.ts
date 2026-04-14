@@ -11,11 +11,11 @@ export class Bill {
     @Column({name: 'decription'})
     decription: string;
     
-    @CreateDateColumn({name: 'created_at'})
-    createdAt: Date;
+    @CreateDateColumn({name: 'created_at', type: 'timestamp'})
+    createdAt: string;
 
-    @UpdateDateColumn({name: 'updated_at'})
-    updatedAt: Date;
+    @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
+    updatedAt: string;
 
     @OneToMany(() => Rent, (rent) => rent.bill)
     rents: Rent[];
