@@ -20,10 +20,10 @@ export class Rent {
     isPayed: boolean;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: string;
+    createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: string;
+    updatedAt: Date;
 
     @Column({ name: 'rent_ticket_id' })
     rentTicketId: string;

@@ -3,7 +3,7 @@ import { CreateDetailStatusDto } from './dto/create-detail-status.dto';
 import { UpdateDetailStatusDto } from './dto/update-detail-status.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DetailStatus } from 'src/model';
-import { Repository } from 'typeorm';
+import { LessThan, MoreThan, Repository } from 'typeorm';
 import { Response } from 'src/common/response';
 import { DetailStatusResponse } from './entities/detail-status.entity';
 
@@ -70,5 +70,24 @@ export class DetailStatusService {
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
+  }
+
+  async findBusyRoomIds(dateCheckIn: string, dateCheckOut: string): Promise<string[]> {
+    // 1. Convert string sang Date và chuẩn hóa về 12:00 UTC để khớp với dữ liệu trong DB
+    const checkIn = new Date(dateCheckIn);
+    checkIn.setUTCHours(12, 0, 0, 0);
+
+    const checkOut = new Date(dateCheckOut);
+    checkOut.setUTCHours(12, 0, 0, 0);
+
+    // 2. Thực hiện truy vấn với đối tượng Date đã chuẩn hóa
+    const busyDetailStatuses = await this.detailStatusRepository.find({
+      where: {
+        dateStart: LessThan(checkOut as any),
+        dateEnd: MoreThan(checkIn as any),
+      },
+      select: { roomId: true },
+    });
+    return [...new Set(busyDetailStatuses.map((ds) => ds.roomId))];
   }
 }

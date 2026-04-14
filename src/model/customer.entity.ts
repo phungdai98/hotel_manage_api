@@ -24,16 +24,16 @@ export class Customer {
     address: string;
 
     @Column({name: 'date_of_birth', type: 'timestamp'})
-    dateOfBirth: string;
+    dateOfBirth: Date;
 
     @Column()
     point: number;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: string;
+    createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: string;
+    updatedAt: Date;
 
     @OneToMany(() => OrderTicket, (orderTicket) => orderTicket.customer)
     orderTickets: OrderTicket[];

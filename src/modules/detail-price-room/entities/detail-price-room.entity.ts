@@ -9,7 +9,7 @@ export class DetailPriceRoomResponse {
     constructor(detailPriceRoom: DetailPriceRoom) {
         this.id = detailPriceRoom.id;
         this.price = detailPriceRoom.price;
-        this.activeDate = detailPriceRoom.activeDate;
+        this.activeDate = detailPriceRoom.activeDate.toISOString();
         this.rankRoomId = detailPriceRoom.rankRoomId;
     }
 }

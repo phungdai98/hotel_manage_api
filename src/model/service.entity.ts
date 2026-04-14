@@ -11,10 +11,10 @@ export class Service {
     name: string;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: string;
+    createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: string;
+    updatedAt: Date;
 
     @OneToMany(() => DetailService, (detailService) => detailService.service)
     detailServices: DetailService[];

@@ -8,5 +8,6 @@ import { RankRoomService } from './rank-room.service';
   imports: [TypeOrmModule.forFeature([RankRoom])],
   controllers: [RankRoomController],
   providers: [RankRoomService],
+  exports: [RankRoomService],
 })
 export class RankRoomModule {}

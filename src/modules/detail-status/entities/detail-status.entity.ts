@@ -10,8 +10,8 @@ export class DetailStatusResponse {
   
   constructor(detailStatus: DetailStatus) {
     this.id = detailStatus.id;
-    this.dateStart = detailStatus.dateStart;
-    this.dateEnd = detailStatus.dateEnd;
+    this.dateStart = detailStatus.dateStart.toISOString();
+    this.dateEnd = detailStatus.dateEnd.toISOString();
     this.roomId = detailStatus.roomId;
     this.statusRoomId = detailStatus.statusRoomId;
     this.orderTicketId = detailStatus.orderTicketId;

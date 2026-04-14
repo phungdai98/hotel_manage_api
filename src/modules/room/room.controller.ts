@@ -43,11 +43,7 @@ export class RoomController extends BaseController {
     @Query('quantity') quantity: number,
   ) {
     try {
-      return this.roomService.findAllByRank(
-        new Date(dateCheckIn),
-        new Date(dateCheckOut),
-        Number(quantity),
-      );
+      return this.roomService.findAllByRank(dateCheckIn, dateCheckOut, Number(quantity));
     } catch (error) {
       return error;
     }

@@ -32,10 +32,10 @@ export class User {
     role: string;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: string;
+    createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: string;
+    updatedAt: Date;
 
     @OneToMany(() => OrderTicket, (orderTicket) => orderTicket.user)
     orderTickets: OrderTicket[];

@@ -19,10 +19,10 @@ export class RankRoom {
     limitPeople: number;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: string;
+    createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: string;
+    updatedAt: Date;
 
     @OneToMany(() => DetailOrderTicket, (detailOrderTicket) => detailOrderTicket.rankRoom)
     detailOrderTickets: DetailOrderTicket[];

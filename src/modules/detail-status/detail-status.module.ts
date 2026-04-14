@@ -8,5 +8,6 @@ import { DetailStatus } from 'src/model';
   imports: [TypeOrmModule.forFeature([DetailStatus])],
   controllers: [DetailStatusController],
   providers: [DetailStatusService],
+  exports: [DetailStatusService],
 })
 export class DetailStatusModule {}

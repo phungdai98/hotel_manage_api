@@ -9,7 +9,7 @@ export class SaleResponse {
   constructor(data: Sale) {
     this.id = data.id;
     this.name = data.name;
-    this.dateStart = data.dateStart;
-    this.dateEnd = data.dateEnd;
+    this.dateStart = data.dateStart.toISOString();
+    this.dateEnd = data.dateEnd.toISOString();
   }
 }

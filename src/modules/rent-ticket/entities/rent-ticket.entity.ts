@@ -11,8 +11,8 @@ export class RentTicketResponse {
 
   constructor(data: RentTicket) {
     this.id = data.id;
-    this.dateStart = data.dateStart;
-    this.dateEnd = data.dateEnd;
+    this.dateStart = data.dateStart.toISOString();
+    this.dateEnd = data.dateEnd.toISOString();
     this.isPayed = data.isPayed;
     this.customerId = data.customer.id;
     this.userId = data.user.id;

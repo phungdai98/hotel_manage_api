@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { OrderTicket } from "./orderTicket.entity";
 import { Room } from "./room.entity";
 import { StatusRoom } from "./statusRoom.entity";
@@ -9,16 +9,16 @@ export class DetailStatus {
     id: string;
 
     @Column({ name: 'date_start', type: 'timestamp' })
-    dateStart: string;
+    dateStart: Date;
 
     @Column({ name: 'date_end', type: 'timestamp' })
-    dateEnd: string;
+    dateEnd: Date;
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
-    createdAt: string;
+    createdAt: Date;
 
     @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
-    updatedAt: string;
+    updatedAt: Date;
 
     @Column({ name: 'room_id' })
     roomId: string;
@@ -40,4 +40,15 @@ export class DetailStatus {
     @ManyToOne(() => OrderTicket, (orderTicket) => orderTicket.detailStatuses)
     @JoinColumn({name: 'order_ticket_id'})
     orderTicket: OrderTicket;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    handleNoonTime() {
+        if (this.dateStart) {
+            this.dateStart.setUTCHours(12, 0, 0, 0);
+        }
+        if (this.dateEnd) {
+            this.dateEnd.setUTCHours(12, 0, 0, 0);
+        }
+    }
 }

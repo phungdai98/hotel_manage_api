@@ -15,10 +15,10 @@ export class Room {
     floor: string;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: string;
+    createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: string;
+    updatedAt: Date;
 
     @Column({ name: 'rank_room_id' })
     rankRoomId: string;

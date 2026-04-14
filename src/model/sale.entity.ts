@@ -9,17 +9,17 @@ export class Sale {
     @Column({name: 'name'})
     name: string;
 
-    @Column({name: 'date_start'})
-    dateStart: string;
+    @Column({name: 'date_start', type: 'timestamp'})
+    dateStart: Date;
 
-    @Column({name: 'date_end'})
-    dateEnd: string;
+    @Column({name: 'date_end', type: 'timestamp'})
+    dateEnd: Date;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: string;
+    createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: string;
+    updatedAt: Date;
 
     @OneToMany(() => DetailSale, (detailSale) => detailSale.sale)
     detailSales: DetailSale[];

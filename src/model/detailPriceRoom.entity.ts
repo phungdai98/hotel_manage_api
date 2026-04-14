@@ -10,10 +10,10 @@ export class DetailPriceRoom {
     price: number;
 
     @Column({name: 'active_date', type: 'timestamp'})
-    activeDate: string;
+    activeDate: Date;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: string;
+    createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
     updatedAt: Date;

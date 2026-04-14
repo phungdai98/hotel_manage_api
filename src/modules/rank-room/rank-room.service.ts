@@ -3,7 +3,7 @@ import { CreateRankRoomDto } from './dto/create-rank-room.dto';
 import { UpdateRankRoomDto } from './dto/update-rank-room.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RankRoom } from 'src/model';
-import { Repository } from 'typeorm';
+import { MoreThanOrEqual, Repository } from 'typeorm';
 import { RankRoomResponse } from './entities/rank-room.entity';
 
 @Injectable()
@@ -69,5 +69,12 @@ export class RankRoomService {
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
+  }
+
+  async findByLimitPeople(quantity: number) {
+    return await this.rankRoomRepository.find({
+      where: { limitPeople: MoreThanOrEqual(quantity) },
+      relations: ['kindRoom', 'typeRoom'],
+    });
   }
 }

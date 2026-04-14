@@ -10,20 +10,20 @@ export class RentTicket {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({name: 'date_start'})
-    dateStart: string;
+    @Column({name: 'date_start', type: 'timestamp'})
+    dateStart: Date;
 
-    @Column({name: 'date_end'})
-    dateEnd: string;
+    @Column({name: 'date_end', type: 'timestamp'})
+    dateEnd: Date;
 
     @Column({name: 'is_payed'})
     isPayed: boolean;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: string;
+    createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: string;
+    updatedAt: Date;
 
     @Column({ name: 'order_ticket_id' })
     orderTicketId: string;

@@ -17,7 +17,7 @@ export class CustomerResponse {
         this.gender = data.gender;
         this.phone = data.phone;
         this.address = data.address;
-        this.dateOfBirth = data.dateOfBirth;
+        this.dateOfBirth = data.dateOfBirth.toISOString();
         this.point = data.point;
     }
 }

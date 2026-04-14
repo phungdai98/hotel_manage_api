@@ -10,17 +10,17 @@ export class OrderTicket {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({name: 'date_start'})
-    dateStart: string;
+    @Column({name: 'date_start', type: 'timestamp'})
+    dateStart: Date;
 
-    @Column({name: 'date_end'})
-    dateEnd: string;
+    @Column({name: 'date_end', type: 'timestamp'})
+    dateEnd: Date;
 
     @Column({name: 'status'})
     status: string;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: string;
+    createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
     updatedAt: Date;

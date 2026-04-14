@@ -11,10 +11,10 @@ export class DetailOrderTicket {
     quantity: number;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: string;
+    createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: string;
+    updatedAt: Date;
 
     @Column({ name: 'order_ticket_id' })
     orderTicketId: string;
