@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from
 import { DetailStatusService } from './detail-status.service';
 import { CreateDetailStatusDto } from './dto/create-detail-status.dto';
 import { UpdateDetailStatusDto } from './dto/update-detail-status.dto';
+import { BaseController } from 'src/common/base.controller';
 
 @Controller('detail-status')
-export class DetailStatusController {
-  constructor(private readonly detailStatusService: DetailStatusService) {}
+export class DetailStatusController extends BaseController {
+  constructor(private readonly detailStatusService: DetailStatusService) {
+    super();
+  }
 
   @Post()
   create(@Body() createDetailStatusDto: CreateDetailStatusDto) {

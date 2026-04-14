@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from
 import { RentService } from './rent.service';
 import { CreateRentDto } from './dto/create-rent.dto';
 import { UpdateRentDto } from './dto/update-rent.dto';
+import { BaseController } from 'src/common/base.controller';
 
 @Controller('rent')
-export class RentController {
-  constructor(private readonly rentService: RentService) {}
+export class RentController extends BaseController {
+  constructor(private readonly rentService: RentService) {
+    super();
+  }
 
   @Post()
   create(@Body() createRentDto: CreateRentDto) {

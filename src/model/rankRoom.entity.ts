@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinColumn, Unique } from "typeorm";
 import { DetailOrderTicket } from "./detailOrderTicket.entity";
 import { KindRoom } from "./kindRoom.entity";
 import { TypeRoom } from "./typeRoom.entity";
@@ -7,6 +7,7 @@ import { DetailSale } from "./detailSale.entity";
 import { DetailPriceRoom } from "./detailPriceRoom.entity";
 
 @Entity('rank_room')
+@Unique(['kindRoomId', 'typeRoomId'])
 export class RankRoom {
     @PrimaryGeneratedColumn('uuid')
     id: string;

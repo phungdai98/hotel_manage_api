@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PartService } from './part.service';
 import { CreatePartDto } from './dto/create-part.dto';
 import { UpdatePartDto } from './dto/update-part.dto';
+import { BaseController } from 'src/common/base.controller';
 
 @Controller('part')
-export class PartController {
-  constructor(private readonly partService: PartService) {}
+export class PartController extends BaseController {
+  constructor(private readonly partService: PartService) {
+    super();
+  }
 
   @Post()
   async create(@Body() createPartDto: CreatePartDto) {

@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from
 import { DetailOrderTicketService } from './detail-order-ticket.service';
 import { CreateDetailOrderTicketDto } from './dto/create-detail-order-ticket.dto';
 import { UpdateDetailOrderTicketDto } from './dto/update-detail-order-ticket.dto';
+import { BaseController } from 'src/common/base.controller';
 
 @Controller('detail-order-ticket')
-export class DetailOrderTicketController {
-  constructor(private readonly detailOrderTicketService: DetailOrderTicketService) {}
+export class DetailOrderTicketController extends BaseController {
+  constructor(private readonly detailOrderTicketService: DetailOrderTicketService) {
+    super();
+  }
 
   @Post()
   create(@Body() createDetailOrderTicketDto: CreateDetailOrderTicketDto) {

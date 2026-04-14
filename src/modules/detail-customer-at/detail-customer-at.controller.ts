@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from
 import { DetailCustomerAtService } from './detail-customer-at.service';
 import { CreateDetailCustomerAtDto } from './dto/create-detail-customer-at.dto';
 import { UpdateDetailCustomerAtDto } from './dto/update-detail-customer-at.dto';
+import { BaseController } from 'src/common/base.controller';
 
 @Controller('detail-customer-at')
-export class DetailCustomerAtController {
-  constructor(private readonly detailCustomerAtService: DetailCustomerAtService) {}
+export class DetailCustomerAtController extends BaseController {
+  constructor(private readonly detailCustomerAtService: DetailCustomerAtService) {
+    super();
+  }
 
   @Post()
   create(@Body() createDetailCustomerAtDto: CreateDetailCustomerAtDto) {

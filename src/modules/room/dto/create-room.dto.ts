@@ -1,5 +1,15 @@
+import { IsNotEmpty, IsString } from "class-validator";
+
 export class CreateRoomDto {
+    @IsNotEmpty()
+    @IsString()
     name: string;
-    floor: number;
+
+    @IsNotEmpty()
+    @IsString()
+    floor: string;
+
+    @IsNotEmpty()
+    @IsString()
     rankRoomId: string;
 }

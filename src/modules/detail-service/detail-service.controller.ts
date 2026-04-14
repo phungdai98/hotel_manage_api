@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from
 import { DetailServiceService } from './detail-service.service';
 import { CreateDetailServiceDto } from './dto/create-detail-service.dto';
 import { UpdateDetailServiceDto } from './dto/update-detail-service.dto';
+import { BaseController } from 'src/common/base.controller';
 
 @Controller('detail-service')
-export class DetailServiceController {
-  constructor(private readonly detailServiceService: DetailServiceService) {}
+export class DetailServiceController extends BaseController {
+  constructor(private readonly detailServiceService: DetailServiceService) {
+    super();
+  }
 
   @Post()
   create(@Body() createDetailServiceDto: CreateDetailServiceDto) {

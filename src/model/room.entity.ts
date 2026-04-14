@@ -12,7 +12,7 @@ export class Room {
     name: string;
 
     @Column({name: 'floor'})
-    floor: number;
+    floor: string;
 
     @CreateDateColumn({name: 'created_at'})
     createdAt: Date;

@@ -3,7 +3,7 @@ import { Room } from 'src/model';
 export class RoomResponse {
   id: string;
   name: string;
-  floor: number;
+  floor: string;
   rankRoomId: string;
   typeRoomId: string;
 

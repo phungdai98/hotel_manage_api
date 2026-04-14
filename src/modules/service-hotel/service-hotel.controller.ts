@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from
 import { ServiceHotelService } from './service-hotel.service';
 import { CreateServiceHotelDto } from './dto/create-service-hotel.dto';
 import { UpdateServiceHotelDto } from './dto/update-service-hotel.dto';
+import { BaseController } from 'src/common/base.controller';
 
 @Controller('service-hotel')
-export class ServiceHotelController {
-  constructor(private readonly serviceHotelService: ServiceHotelService) {}
+export class ServiceHotelController extends BaseController {
+  constructor(private readonly serviceHotelService: ServiceHotelService) {
+    super();
+  }
 
   @Post()
   create(@Body() createServiceHotelDto: CreateServiceHotelDto) {

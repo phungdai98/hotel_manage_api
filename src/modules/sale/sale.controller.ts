@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from
 import { SaleService } from './sale.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { UpdateSaleDto } from './dto/update-sale.dto';
+import { BaseController } from 'src/common/base.controller';
 
 @Controller('sale')
-export class SaleController {
-  constructor(private readonly saleService: SaleService) {}
+export class SaleController extends BaseController {
+  constructor(private readonly saleService: SaleService) {
+    super();
+  }
 
   @Post()
   create(@Body() createSaleDto: CreateSaleDto) {

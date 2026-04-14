@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { BaseController } from 'src/common/base.controller';
 
 @Controller('room')
-export class RoomController {
-  constructor(private readonly roomService: RoomService) {}
+export class RoomController extends BaseController {
+  constructor(private readonly roomService: RoomService) {
+    super();
+  }
 
   @Post()
   create(@Body() createRoomDto: CreateRoomDto) {

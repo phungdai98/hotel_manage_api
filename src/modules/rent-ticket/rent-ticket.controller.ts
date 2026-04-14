@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from
 import { RentTicketService } from './rent-ticket.service';
 import { CreateRentTicketDto } from './dto/create-rent-ticket.dto';
 import { UpdateRentTicketDto } from './dto/update-rent-ticket.dto';
+import { BaseController } from 'src/common/base.controller';
 
 @Controller('rent-ticket')
-export class RentTicketController {
-  constructor(private readonly rentTicketService: RentTicketService) {}
+export class RentTicketController extends BaseController {
+  constructor(private readonly rentTicketService: RentTicketService) {
+    super();
+  }
 
   @Post()
   create(@Body() createRentTicketDto: CreateRentTicketDto) {

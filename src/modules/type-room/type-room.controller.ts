@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { TypeRoomService } from './type-room.service';
 import { CreateTypeRoomDto } from './dto/create-type-room.dto';
 import { UpdateTypeRoomDto } from './dto/update-type-room.dto';
@@ -21,17 +21,17 @@ export class TypeRoomController extends BaseController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.typeRoomService.findOne(id);
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateTypeRoomDto: UpdateTypeRoomDto) {
+  async update(@Param('id', ParseUUIDPipe) id: string, @Body() updateTypeRoomDto: UpdateTypeRoomDto) {
     return this.typeRoomService.update(id, updateTypeRoomDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.typeRoomService.remove(id);
   }
 }
