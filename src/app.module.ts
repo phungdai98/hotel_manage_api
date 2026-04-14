@@ -43,7 +43,7 @@ import { StatusRoomModule } from './modules/status-room/status-room.module';
       database: process.env.DB_NAME,
       // entities: [__dirname + '/**/*.entity{.ts,.js}'],
       autoLoadEntities: true,
-      synchronize: true, // Lưu ý: Chỉ bật true khi dev (tự động tạo bảng)
+      synchronize: false, // Lưu ý: Chỉ bật true khi dev (tự động tạo bảng)
     }),
     TypeOrmModule.forFeature([
       Bill, Customer, DetailBill, DetailCustomerAt, DetailOrderTicket, DetailPriceRoom, DetailPriceService, DetailSale, DetailService, DetailStatus, KindRoom, OrderTicket, Part, RankRoom, Rent, RentTicket, Room, Sale, Service, StatusRoom, TypeRoom, User
