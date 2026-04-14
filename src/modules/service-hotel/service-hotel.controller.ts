@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { ServiceHotelService } from './service-hotel.service';
 import { CreateServiceHotelDto } from './dto/create-service-hotel.dto';
 import { UpdateServiceHotelDto } from './dto/update-service-hotel.dto';
@@ -18,17 +18,17 @@ export class ServiceHotelController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.serviceHotelService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.serviceHotelService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateServiceHotelDto: UpdateServiceHotelDto) {
-    return this.serviceHotelService.update(+id, updateServiceHotelDto);
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateServiceHotelDto: UpdateServiceHotelDto) {
+    return this.serviceHotelService.update(id, updateServiceHotelDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.serviceHotelService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.serviceHotelService.remove(id);
   }
 }

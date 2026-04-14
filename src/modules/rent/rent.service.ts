@@ -1,26 +1,72 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateRentDto } from './dto/create-rent.dto';
 import { UpdateRentDto } from './dto/update-rent.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Rent } from 'src/model';
+import { Repository } from 'typeorm';
+import { Response } from 'src/common/response';
+import { RentResponse } from './entities/rent.entity';
 
 @Injectable()
 export class RentService {
-  create(createRentDto: CreateRentDto) {
-    return 'This action adds a new rent';
+  constructor(
+    @InjectRepository(Rent)
+    private rentRepository: Repository<Rent>,
+  ) {}
+  async create(createRentDto: CreateRentDto): Promise<Response> {
+    try {
+      const rent = this.rentRepository.create(createRentDto);
+      await this.rentRepository.save(rent);
+      return new Response('Rent created successfully', 201);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
-  findAll() {
-    return `This action returns all rent`;
+  async findAll(): Promise<RentResponse[]> {
+    try {
+      const rents = await this.rentRepository.find();
+      return rents.map((rent) => new RentResponse(rent));
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} rent`;
+  async findOne(id: string): Promise<RentResponse> {
+    try {
+      const rent = await this.rentRepository.findOne({ where: { id } });
+      if (!rent) {
+        throw new NotFoundException('Rent not found');
+      }
+      return new RentResponse(rent);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
-  update(id: number, updateRentDto: UpdateRentDto) {
-    return `This action updates a #${id} rent`;
+  async update(id: string, updateRentDto: UpdateRentDto): Promise<Response> {
+    try {
+      const rent = await this.rentRepository.findOne({ where: { id } });
+      if (!rent) {
+        throw new NotFoundException('Rent not found');
+      }
+      await this.rentRepository.update(id, updateRentDto);
+      return new Response('Rent updated successfully', 200);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} rent`;
+  async remove(id: string): Promise<Response> {
+    try {
+      const rent = await this.rentRepository.findOne({ where: { id } });
+      if (!rent) {
+        throw new NotFoundException('Rent not found');
+      }
+      await this.rentRepository.remove(rent);
+      return new Response('Rent deleted successfully', 200);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 }
