@@ -8,5 +8,6 @@ import { DetailOrderTicket } from 'src/model';
   imports: [TypeOrmModule.forFeature([DetailOrderTicket])],
   controllers: [DetailOrderTicketController],
   providers: [DetailOrderTicketService],
+  exports: [DetailOrderTicketService],
 })
 export class DetailOrderTicketModule {}

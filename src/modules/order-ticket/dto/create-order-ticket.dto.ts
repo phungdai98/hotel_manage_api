@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { OrderTicketStatusEnum } from 'src/common/enums/orderTicketStatus.enum';
 
 export class CreateOrderTicketDto {
     @IsString()
@@ -9,9 +10,9 @@ export class CreateOrderTicketDto {
     @IsNotEmpty()
     dateEnd: string;
 
-    @IsString()
+    @IsEnum(OrderTicketStatusEnum)
     @IsNotEmpty()
-    status: string;
+    status: OrderTicketStatusEnum;
 
     @IsString()
     @IsNotEmpty()

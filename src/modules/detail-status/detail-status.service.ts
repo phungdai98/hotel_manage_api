@@ -6,6 +6,7 @@ import { DetailStatus } from 'src/model';
 import { LessThan, MoreThan, Repository } from 'typeorm';
 import { Response } from 'src/common/response';
 import { DetailStatusResponse } from './entities/detail-status.entity';
+import { StatusRoomEnum } from 'src/common/enums/statusRoomEnum';
 
 @Injectable()
 export class DetailStatusService {
@@ -87,5 +88,38 @@ export class DetailStatusService {
       select: { roomId: true },
     });
     return [...new Set(busyDetailStatuses.map((ds) => ds.roomId))];
+  }
+
+  async countUnavailableRoomsByRankIds(
+    dateCheckIn: string,
+    dateCheckOut: string,
+    rankRoomIds: string[],
+  ): Promise<Record<string, number>> {
+    const checkIn = new Date(dateCheckIn);
+    const checkOut = new Date(dateCheckOut);
+
+    const rows = await this.detailStatusRepository
+      .createQueryBuilder('detailStatus')
+      .select('room.rankRoomId', 'rankRoomId')
+      .addSelect('COUNT(DISTINCT detailStatus.roomId)', 'unavailableCount')
+      .innerJoin('detailStatus.room', 'room')
+      .innerJoin('detailStatus.statusRoom', 'statusRoom')
+      .where('room.rankRoomId IN (:...rankRoomIds)', { rankRoomIds })
+      .andWhere('detailStatus.dateStart < :checkOut', { checkOut })
+      .andWhere('detailStatus.dateEnd > :checkIn', { checkIn })
+      .andWhere('statusRoom.name IN (:...statusNames)', {
+        statusNames: [
+          StatusRoomEnum.MAINTENANCE,
+          StatusRoomEnum.BROKEN,
+          StatusRoomEnum.OUT_OF_SERVICE,
+        ],
+      })
+      .groupBy('room.rankRoomId')
+      .getRawMany<{ rankRoomId: string; unavailableCount: string }>();
+
+    return rows.reduce((acc, row) => {
+      acc[row.rankRoomId] = Number(row.unavailableCount);
+      return acc;
+    }, {} as Record<string, number>);
   }
 }

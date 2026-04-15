@@ -8,6 +8,7 @@ export class RankRoomResponse {
   typeRoomId: string;
   typeRoomName: string;
   kindRoomName: string;
+  availableCount?: number;
 
   constructor(
     data: RankRoom ,

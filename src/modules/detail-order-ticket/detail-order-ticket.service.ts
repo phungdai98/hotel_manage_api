@@ -6,6 +6,7 @@ import { DetailOrderTicket } from 'src/model';
 import { Repository } from 'typeorm';
 import { Response } from 'src/common/response';
 import { DetailOrderTicketResponse } from './entities/detail-order-ticket.entity';
+import { OrderTicketStatusEnum } from 'src/common/enums/orderTicketStatus.enum';
 
 @Injectable()
 export class DetailOrderTicketService {
@@ -27,6 +28,33 @@ export class DetailOrderTicketService {
     try {
       const result = await this.detailOrderTicketRepository.find();
       return result.map((item) => new DetailOrderTicketResponse(item));
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async countBookedQuantityByRankIds(
+    dateCheckIn: string,
+    dateCheckOut: string,
+    rankRoomIds: string[],
+  ): Promise<Record<string, number>> {
+    try {
+      const rows = await this.detailOrderTicketRepository
+        .createQueryBuilder('detailOrderTicket')
+        .select('detailOrderTicket.rankRoomId', 'rankRoomId')
+        .addSelect('SUM(detailOrderTicket.quantity)', 'bookedQuantity')
+        .innerJoin('detailOrderTicket.orderTicket', 'orderTicket')
+        .where('detailOrderTicket.rankRoomId IN (:...rankRoomIds)', { rankRoomIds })
+        .andWhere('orderTicket.dateStart < :dateCheckOut', { dateCheckOut })
+        .andWhere('orderTicket.dateEnd > :dateCheckIn', { dateCheckIn })
+        .andWhere('orderTicket.status != :cancelled', { cancelled: OrderTicketStatusEnum.CANCELLED })
+        .groupBy('detailOrderTicket.rankRoomId')
+        .getRawMany<{ rankRoomId: string; bookedQuantity: string }>();
+
+      return rows.reduce((acc, row) => {
+        acc[row.rankRoomId] = Number(row.bookedQuantity);
+        return acc;
+      }, {} as Record<string, number>);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
