@@ -4,17 +4,17 @@ import { User } from "./user.entity";
 @Entity('part')
 export class Part {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'name'})
-    name: string;
+    name!: string;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @OneToMany(() => User, (user) => user.part)
-    users: User[];  
+    users!: User[];  
 }

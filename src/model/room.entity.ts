@@ -6,30 +6,30 @@ import { Rent } from "./rent.entity";
 @Entity('room')
 export class Room {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'name'})
-    name: string;
+    name!: string;
 
     @Column({name: 'floor'})
-    floor: string;
+    floor!: string;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @Column({ name: 'rank_room_id' })
-    rankRoomId: string;
+    rankRoomId!: string;
 
     @ManyToOne(() => RankRoom, (rankRoom) => rankRoom.rooms)
     @JoinColumn({name: 'rank_room_id'})
-    rankRoom: RankRoom;
+    rankRoom!: RankRoom;
 
     @OneToMany(() => DetailStatus, (detailStatus) => detailStatus.room)
-    detailStatuses: DetailStatus[];
+    detailStatuses!: DetailStatus[];
 
     @OneToMany(() => Rent, (rent) => rent.room)
-    rents: Rent[];
+    rents!: Rent[];
 }

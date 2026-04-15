@@ -5,31 +5,31 @@ import { RankRoom } from "./rankRoom.entity";
 @Entity('detail_sale')
 export class DetailSale {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'decription'})
-    decription: string;
+    decription!: string;
 
     @Column({name: 'ratio'})
-    ratio: number;
+    ratio!: number;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @Column({ name: 'sale_id' })
-    saleId: string;
+    saleId!: string;
 
     @ManyToOne(() => Sale, (sale) => sale.detailSales)
     @JoinColumn({name: 'sale_id'})
-    sale: Sale;
+    sale!: Sale;
 
     @Column({ name: 'rank_room_id' })
-    rankRoomId: string;
+    rankRoomId!: string;
 
     @ManyToOne(() => RankRoom, (rankRoom) => rankRoom.detailSales)
     @JoinColumn({name: 'rank_room_id'})
-    rankRoom: RankRoom;
+    rankRoom!: RankRoom;
 }

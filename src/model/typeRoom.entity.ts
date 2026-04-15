@@ -4,17 +4,17 @@ import { RankRoom } from "./rankRoom.entity";
 @Entity('type_room')
 export class TypeRoom {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'name'})
-    name: string;
+    name!: string;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @OneToMany(() => RankRoom, (rankRoom) => rankRoom.typeRoom)
-    rankRooms: RankRoom[];
+    rankRooms!: RankRoom[];
 }

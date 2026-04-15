@@ -10,43 +10,43 @@ import { DetailPriceRoom } from "./detailPriceRoom.entity";
 @Unique(['kindRoomId', 'typeRoomId'])
 export class RankRoom {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'url_image'})
-    urlImage: string;
+    urlImage!: string;
 
     @Column({name: 'limit_people'})
-    limitPeople: number;
+    limitPeople!: number;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @OneToMany(() => DetailOrderTicket, (detailOrderTicket) => detailOrderTicket.rankRoom)
-    detailOrderTickets: DetailOrderTicket[];
+    detailOrderTickets!: DetailOrderTicket[];
 
     @Column({ name: 'kind_room_id' })
-    kindRoomId: string;
+    kindRoomId!: string;
 
     @ManyToOne(() => KindRoom, (kindRoom) => kindRoom.rankRooms)
     @JoinColumn({name: 'kind_room_id'})
-    kindRoom: KindRoom;
+    kindRoom!: KindRoom;
 
     @Column({ name: 'type_room_id' })
-    typeRoomId: string;
+    typeRoomId!: string;
 
     @ManyToOne(() => TypeRoom, (typeRoom) => typeRoom.rankRooms)
     @JoinColumn({name: 'type_room_id'})
-    typeRoom: TypeRoom;
+    typeRoom!: TypeRoom;
 
     @OneToMany(() => Room, (room) => room.rankRoom)
-    rooms: Room[];
+    rooms!: Room[];
 
     @OneToMany(() => DetailSale, (detailSale) => detailSale.rankRoom)
-    detailSales: DetailSale[];
+    detailSales!: DetailSale[];
 
     @OneToMany(() => DetailPriceRoom, (detailPriceRoom) => detailPriceRoom.rankRoom)
-    detailPriceRooms: DetailPriceRoom[];
+    detailPriceRooms!: DetailPriceRoom[];
 }

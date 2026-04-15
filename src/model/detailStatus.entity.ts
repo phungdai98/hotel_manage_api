@@ -6,40 +6,40 @@ import { StatusRoom } from "./statusRoom.entity";
 @Entity('detail_status')
 export class DetailStatus {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({ name: 'date_start', type: 'timestamp' })
-    dateStart: Date;
+    dateStart!: Date;
 
     @Column({ name: 'date_end', type: 'timestamp' })
-    dateEnd: Date;
+    dateEnd!: Date;
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @Column({ name: 'room_id' })
-    roomId: string;
+    roomId!: string;
 
     @ManyToOne(() => Room, (room) => room.detailStatuses)
     @JoinColumn({name: 'room_id'})
-    room: Room;
+    room!: Room;
 
     @Column({ name: 'status_room_id' })
-    statusRoomId: string;
+    statusRoomId!: string;
 
     @ManyToOne(() => StatusRoom, (statusRoom) => statusRoom.detailStatuses)
     @JoinColumn({name: 'status_room_id'})
-    statusRoom: StatusRoom;
+    statusRoom!: StatusRoom;
 
     @Column({ name: 'order_ticket_id' })
-    orderTicketId: string;
+    orderTicketId!: string;
 
     @ManyToOne(() => OrderTicket, (orderTicket) => orderTicket.detailStatuses)
     @JoinColumn({name: 'order_ticket_id'})
-    orderTicket: OrderTicket;
+    orderTicket!: OrderTicket;
 
     @BeforeInsert()
     @BeforeUpdate()

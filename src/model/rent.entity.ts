@@ -8,47 +8,47 @@ import { DetailService } from "./detailService.entity";
 @Entity('rent')
 export class Rent {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'surcharge'})
-    surcharge: number;
+    surcharge!: number;
 
     @Column({name: 'reason', type: 'jsonb', default: {}})
-    reason: Record<string, string>;
+    reason!: Record<string, string>;
 
     @Column({name: 'is_payed'})
-    isPayed: boolean;
+    isPayed!: boolean;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @Column({ name: 'rent_ticket_id' })
-    rentTicketId: string;
+    rentTicketId!: string;
 
     @ManyToOne(() => RentTicket, (rentTicket) => rentTicket.rents)
     @JoinColumn({name: 'rent_ticket_id'})
-    rentTicket: RentTicket;
+    rentTicket!: RentTicket;
 
     @Column({ name: 'room_id' })
-    roomId: string;
+    roomId!: string;
 
     @ManyToOne(() => Room, (room) => room.rents)
     @JoinColumn({name: 'room_id'})
-    room: Room;
+    room!: Room;
 
     @Column({ name: 'bill_id' })
-    billId: string;
+    billId!: string;
 
     @ManyToOne(() => Bill, (bill) => bill.rents)
     @JoinColumn({name: 'bill_id'})
-    bill: Bill;
+    bill!: Bill;
 
     @OneToMany(() => DetailCustomerAt, (detailCustomerAt) => detailCustomerAt.rent)
-    detailCustomerAts: DetailCustomerAt[];
+    detailCustomerAts!: DetailCustomerAt[];
 
     @OneToMany(() => DetailService, (detailService) => detailService.rent)
-    detailServices: DetailService[];
+    detailServices!: DetailService[];
 }

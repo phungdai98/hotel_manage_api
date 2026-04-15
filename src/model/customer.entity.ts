@@ -6,41 +6,41 @@ import { RentTicket } from "./rentTicket.entity";
 @Entity('customer')
 export class Customer {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'id_card'})
-    idCard: string;
+    idCard!: string;
 
     @Column()
-    name: string;
+    name!: string;
 
     @Column()
-    gender: boolean;
+    gender!: boolean;
 
     @Column()
-    phone: string;
+    phone!: string;
 
     @Column()
-    address: string;
+    address!: string;
 
     @Column({name: 'date_of_birth', type: 'timestamp'})
-    dateOfBirth: Date;
+    dateOfBirth!: Date;
 
     @Column()
-    point: number;
+    point!: number;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @OneToMany(() => OrderTicket, (orderTicket) => orderTicket.customer)
-    orderTickets: OrderTicket[];
+    orderTickets!: OrderTicket[];
 
     @OneToMany(() => RentTicket, (rentTicket) => rentTicket.customer)
-    rentTickets: RentTicket[];
+    rentTickets!: RentTicket[];
 
     @OneToMany(() => DetailCustomerAt, (detailCustomerAt) => detailCustomerAt.customer)
-    detailCustomerAts: DetailCustomerAt[];
+    detailCustomerAts!: DetailCustomerAt[];
 }

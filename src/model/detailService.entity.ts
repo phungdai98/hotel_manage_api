@@ -5,37 +5,37 @@ import { Rent } from "./rent.entity";
 @Entity('detail_service')
 export class DetailService {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'decription'})
-    decription: string;
+    decription!: string;
 
     @Column({name: 'amount'})
-    amount: number;
+    amount!: number;
 
     @Column({name: 'price'})
-    price: number;
+    price!: number;
 
     @Column({name: 'is_payed'})
-    isPayed: boolean;
+    isPayed!: boolean;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @Column({ name: 'service_id' })
-    serviceId: string;
+    serviceId!: string;
 
     @ManyToOne(() => Service, (service) => service.detailServices)
     @JoinColumn({name: 'service_id'})
-    service: Service;
+    service!: Service;
 
     @Column({ name: 'rent_id' })
-    rentId: string;
+    rentId!: string;
 
     @ManyToOne(() => Rent, (rent) => rent.detailServices)
     @JoinColumn({name: 'rent_id'})
-    rent: Rent;
+    rent!: Rent;
 }

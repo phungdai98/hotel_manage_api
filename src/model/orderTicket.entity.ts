@@ -8,43 +8,43 @@ import { User } from "./user.entity";
 @Entity('order_ticket')
 export class OrderTicket {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'date_start', type: 'timestamp'})
-    dateStart: Date;
+    dateStart!: Date;
 
     @Column({name: 'date_end', type: 'timestamp'})
-    dateEnd: Date;
+    dateEnd!: Date;
 
     @Column({name: 'status'})
-    status: string;
+    status!: string;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @OneToMany(() => DetailOrderTicket, (detailOrderTicket) => detailOrderTicket.orderTicket)
-    detailOrderTickets: DetailOrderTicket[];
+    detailOrderTickets!: DetailOrderTicket[];
 
     @Column({ name: 'customer_id' })
-    customerId: string;
+    customerId!: string;
 
     @ManyToOne(() => Customer, (customer) => customer.orderTickets)
     @JoinColumn({name: 'customer_id'})
-    customer: Customer;
+    customer!: Customer;
 
     @Column({ name: 'user_id' })
-    userId: string;
+    userId!: string;
 
     @ManyToOne(() => User, (user) => user.orderTickets)
     @JoinColumn({name: 'user_id'})
-    user: User;
+    user!: User;
 
     @OneToMany(() => DetailStatus, (detailStatus) => detailStatus.orderTicket)
-    detailStatuses: DetailStatus[];
+    detailStatuses!: DetailStatus[];
 
     @OneToOne(() => RentTicket, (rentTicket) => rentTicket.orderTicket)
-    rentTicket: RentTicket;
+    rentTicket!: RentTicket;
 }

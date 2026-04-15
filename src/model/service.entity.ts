@@ -5,20 +5,20 @@ import { DetailPriceService } from "./detailPriceService.entity";
 @Entity('service')
 export class Service {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'name'})
-    name: string;
+    name!: string;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @OneToMany(() => DetailService, (detailService) => detailService.service)
-    detailServices: DetailService[];
+    detailServices!: DetailService[];
 
     @OneToMany(() => DetailPriceService, (detailPriceService) => detailPriceService.service)
-    detailPriceServices: DetailPriceService[];
+    detailPriceServices!: DetailPriceService[];
 }

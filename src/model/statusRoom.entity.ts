@@ -4,17 +4,17 @@ import { DetailStatus } from "./detailStatus.entity";
 @Entity('status_room')
 export class StatusRoom {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'name'})
-    name: string;
+    name!: string;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @OneToMany(() => DetailStatus, (detailStatus) => detailStatus.statusRoom)
-    detailStatuses: DetailStatus[];
+    detailStatuses!: DetailStatus[];
 }

@@ -8,44 +8,44 @@ import { Bill } from "./bill.entity";
 @Entity('rent_ticket')
 export class RentTicket {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'date_start', type: 'timestamp'})
-    dateStart: Date;
+    dateStart!: Date;
 
     @Column({name: 'date_end', type: 'timestamp'})
-    dateEnd: Date;
+    dateEnd!: Date;
 
     @Column({name: 'is_payed'})
-    isPayed: boolean;
+    isPayed!: boolean;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @Column({ name: 'order_ticket_id' })
-    orderTicketId: string;
+    orderTicketId!: string;
 
     @OneToOne(() => OrderTicket, (orderTicket) => orderTicket.rentTicket)
     @JoinColumn({name: 'order_ticket_id'})
-    orderTicket: OrderTicket;
+    orderTicket!: OrderTicket;
 
     @ManyToOne(() => User, (user) => user.rentTickets)
     @JoinColumn({name: 'user_id'})
-    user: User;
+    user!: User;
 
     @Column({ name: 'customer_id' })
-    customerId: string;
+    customerId!: string;
 
     @ManyToOne(() => Customer, (customer) => customer.rentTickets)
     @JoinColumn({name: 'customer_id'})
-    customer: Customer;
+    customer!: Customer;
 
     @OneToMany(() => Rent, (rent) => rent.rentTicket)
-    rents: Rent[];
+    rents!: Rent[];
 
     @OneToMany(() => Bill, (bill) => bill.rentTicket)
-    bills: Bill[];
+    bills!: Bill[];
 }

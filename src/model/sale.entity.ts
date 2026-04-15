@@ -4,23 +4,23 @@ import { DetailSale } from "./detailSale.entity";
 @Entity('sale')
 export class Sale {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'name'})
-    name: string;
+    name!: string;
 
     @Column({name: 'date_start', type: 'timestamp'})
-    dateStart: Date;
+    dateStart!: Date;
 
     @Column({name: 'date_end', type: 'timestamp'})
-    dateEnd: Date;
+    dateEnd!: Date;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @OneToMany(() => DetailSale, (detailSale) => detailSale.sale)
-    detailSales: DetailSale[];
+    detailSales!: DetailSale[];
 }

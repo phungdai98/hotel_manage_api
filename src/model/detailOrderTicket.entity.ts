@@ -5,28 +5,28 @@ import { RankRoom } from "./rankRoom.entity";
 @Entity('detail_order_ticket')
 export class DetailOrderTicket {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'quantity'})
-    quantity: number;
+    quantity!: number;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @Column({ name: 'order_ticket_id' })
-    orderTicketId: string;
+    orderTicketId!: string;
 
     @ManyToOne(() => OrderTicket, (orderTicket) => orderTicket.detailOrderTickets)
     @JoinColumn({name: 'order_ticket_id'})
-    orderTicket: OrderTicket;
+    orderTicket!: OrderTicket;
 
     @Column({ name: 'rank_room_id' })
-    rankRoomId: string;
+    rankRoomId!: string;
 
     @ManyToOne(() => RankRoom, (rankRoom) => rankRoom.detailOrderTickets)
     @JoinColumn({name: 'rank_room_id'})
-    rankRoom: RankRoom;
+    rankRoom!: RankRoom;
 }

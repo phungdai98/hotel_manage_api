@@ -8,48 +8,48 @@ import { Bill } from "./bill.entity";
 @Unique(['idCard', 'email', 'phone'])
 export class User {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({name: 'id_card', unique: true})
-    idCard: string;
+    idCard!: string;
 
     @Column({name: 'name'})
-    name: string;
+    name!: string;
 
     @Column({name: 'email', unique: true})
-    email: string;
+    email!: string;
 
     @Column({name: 'phone', unique: true})
-    phone: string;
+    phone!: string;
 
     @Column({name: 'address'})
-    address: string;
+    address!: string;
 
     @Column({name: 'password'})
-    password: string;
+    password!: string;
 
     @Column({name: 'role'})
-    role: string;
+    role!: string;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @OneToMany(() => OrderTicket, (orderTicket) => orderTicket.user)
-    orderTickets: OrderTicket[];
+    orderTickets!: OrderTicket[];
 
     @Column({ name: 'part_id' })
-    partId: string;
+    partId!: string;
 
     @ManyToOne(() => Part, (part) => part.users)
     @JoinColumn({name: 'part_id'})
-    part: Part;
+    part!: Part;
 
     @OneToMany(() => RentTicket, (rentTicket) => rentTicket.user)
-    rentTickets: RentTicket[];
+    rentTickets!: RentTicket[];
 
     @OneToMany(() => Bill, (bill) => bill.user)
-    bills: Bill[];
+    bills!: Bill[];
 }
