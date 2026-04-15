@@ -1,10 +1,12 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ApiResponse } from 'src/common/entities/typeResponse';
+import { Bill, RentTicket } from 'src/model';
+import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Bill, RentTicket } from 'src/model';
-import { DeleteResult, FindOptionsWhere, Like, Repository } from 'typeorm';
 import { BillResponse } from './entities/bill.entity';
+import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
 
 @Injectable()
 export class BillService {
@@ -22,8 +24,8 @@ export class BillService {
       }
       const result = await this.billRepository.save(createBillDto);
       return new BillResponse(result);
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error: ErrorResponseWithStatusCode) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -39,7 +41,7 @@ export class BillService {
         where: where,
       });
       return result.map((bill) => new BillResponse(bill));
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -51,31 +53,31 @@ export class BillService {
         throw new NotFoundException('Bill not found');
       }
       return new BillResponse(result);
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async update(id: string, updateBillDto: UpdateBillDto) {
+  async update(id: string, updateBillDto: UpdateBillDto): Promise<ApiResponse<null>> {
     try {
       const result = await this.billRepository.update(id, updateBillDto);
       if (!result) {
         throw new NotFoundException('Bill not found');
       }
-      return result;
-    } catch (error) {
+      return new ApiResponse(true, null, 'Bill updated successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async remove(id: string): Promise<string> {
+  async remove(id: string): Promise<ApiResponse<null>> {
     try {
       const result = await this.billRepository.delete(id);
       if (!result) {
         throw new NotFoundException('Bill not found');
       }
-      return id;
-    } catch (error) {
+      return new ApiResponse(true, null, 'Bill deleted successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }

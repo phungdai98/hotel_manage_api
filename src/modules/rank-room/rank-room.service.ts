@@ -7,6 +7,8 @@ import { In, MoreThanOrEqual, Repository } from 'typeorm';
 import { RankRoomResponse } from './entities/rank-room.entity';
 import { DetailOrderTicketService } from '../detail-order-ticket/detail-order-ticket.service';
 import { DetailStatusService } from '../detail-status/detail-status.service';
+import { ApiResponse } from 'src/common/entities/typeResponse';
+import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
 
 @Injectable()
 export class RankRoomService {
@@ -18,40 +20,43 @@ export class RankRoomService {
     private readonly detailOrderTicketService: DetailOrderTicketService,
     private readonly detailStatusService: DetailStatusService,
   ) {}
-  async create(createRankRoomDto: CreateRankRoomDto) {
+  async create(createRankRoomDto: CreateRankRoomDto): Promise<ApiResponse<null>> {
     try {
       const rankRoom = this.rankRoomRepository.create(createRankRoomDto);
-      const result = await this.rankRoomRepository.save(rankRoom);
-      return result;
-    } catch (error: any) {
+      await this.rankRoomRepository.save(rankRoom);
+      return new ApiResponse(true, null, 'Rank room created successfully', 201);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async findAll(): Promise<RankRoomResponse[] | null> {
+  async findAll(): Promise<RankRoomResponse[]> {
     try {
       const result = await this.rankRoomRepository.find({
         relations: ['kindRoom', 'typeRoom'],
       });
       return result.map((item) => new RankRoomResponse(item));
-    } catch (error: any) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async findOne(id: string): Promise<RankRoomResponse | null> {
+  async findOne(id: string): Promise<RankRoomResponse> {
     try {
       const result = await this.rankRoomRepository.findOne({ 
         where: { id: id },
         relations: ['kindRoom', 'typeRoom'],
       });
-      return result ? new RankRoomResponse(result) : null;
-    } catch (error: any) {
+      if (!result) {
+        throw new BadRequestException(`Rank room (ID: ${id}) not found!`);
+      }
+      return new RankRoomResponse(result);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async update(id: string, updateRankRoomDto: UpdateRankRoomDto): Promise<RankRoomResponse | null> {
+  async update(id: string, updateRankRoomDto: UpdateRankRoomDto): Promise<ApiResponse<null>> {
     try {
       const rankRoom = await this.rankRoomRepository.findOne({ where: { id: id } });
       if (!rankRoom) {
@@ -62,17 +67,21 @@ export class RankRoomService {
       rankRoom.kindRoomId = updateRankRoomDto.kindRoomId || rankRoom.kindRoomId;
       rankRoom.typeRoomId = updateRankRoomDto.typeRoomId || rankRoom.typeRoomId;
       const result = await this.rankRoomRepository.save(rankRoom);
-      return new RankRoomResponse(result);
-    } catch (error: any) {
+      return new ApiResponse(true, null, 'Rank room updated successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<ApiResponse<null>> {
     try {
-      const result = await this.rankRoomRepository.delete(id);
-      return result;
-    } catch (error: any) {
+      const rankRoom = await this.rankRoomRepository.findOne({ where: { id: id } });
+      if (!rankRoom) {
+        throw new BadRequestException(`Rank room (ID: ${id}) not found!`);
+      }
+      await this.rankRoomRepository.delete(id);
+      return new ApiResponse(true, null, 'Rank room deleted successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }

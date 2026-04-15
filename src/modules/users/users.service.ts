@@ -5,6 +5,7 @@ import { Part, User } from '../../model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponse } from './entities/user.entity';
+import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +14,7 @@ export class UsersService {
         private userRepository: Repository<User>,
         @InjectRepository(Part)
         private partRepository: Repository<Part>,
-    ) {}
+    ) { }
 
     async findOne(email: string): Promise<UserResponse | null> {
         try {
@@ -22,7 +23,7 @@ export class UsersService {
                 throw new BadRequestException(`Người dùng (Email: ${email}) không tồn tại trong hệ thống!`);
             }
             return new UserResponse(user);
-        } catch (error) {
+        } catch (error: ErrorResponseWithStatusCode) {
             console.log(error);
             throw new InternalServerErrorException(error.message);
         }
@@ -32,7 +33,7 @@ export class UsersService {
         try {
             const user = await this.userRepository.findOne({ where: { email } });
             return user || null;
-        } catch (error) {
+        } catch (error: ErrorResponseWithStatusCode) {
             console.log(error);
             throw new InternalServerErrorException(error.message);
         }
@@ -45,7 +46,7 @@ export class UsersService {
                 throw new BadRequestException(`Người dùng không tồn tại trong hệ thống!`);
             }
             return users.map((user) => new UserResponse(user));
-        } catch (error) {
+        } catch (error: ErrorResponseWithStatusCode) {
             console.log(error);
             throw new InternalServerErrorException(error.message);
         }
@@ -60,7 +61,7 @@ export class UsersService {
             const user = this.userRepository.create(createUserDto);
             const savedUser = await this.userRepository.save(user);
             return new UserResponse(savedUser);
-        } catch (error) {
+        } catch (error: ErrorResponseWithStatusCode) {
             console.log(error);
             throw new InternalServerErrorException(error.message);
         }
@@ -88,7 +89,7 @@ export class UsersService {
             user.partId = updateUserDto.partId || user.partId;
             const result = await this.userRepository.update(id, user);
             return result;
-        } catch (error) {
+        } catch (error: ErrorResponseWithStatusCode) {
             console.log(error);
             throw new InternalServerErrorException(error.message);
         }
@@ -102,7 +103,7 @@ export class UsersService {
             }
             const result = await this.userRepository.delete(id);
             return result;
-        } catch (error) {
+        } catch (error: ErrorResponseWithStatusCode) {
             throw new InternalServerErrorException(error.message);
         }
     }

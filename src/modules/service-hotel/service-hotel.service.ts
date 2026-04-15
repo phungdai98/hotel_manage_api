@@ -4,8 +4,9 @@ import { UpdateServiceHotelDto } from './dto/update-service-hotel.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from 'src/model';
 import { Repository } from 'typeorm';
-import { Response } from 'src/common/response';
 import { ServiceHotelResponse } from './entities/service-hotel.entity';
+import { ApiResponse } from 'src/common/entities/typeResponse';
+import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
 
 @Injectable()
 export class ServiceHotelService {
@@ -13,12 +14,12 @@ export class ServiceHotelService {
     @InjectRepository(Service)
     private readonly serviceRepository: Repository<Service>,
   ) {}
-  async create(createServiceHotelDto: CreateServiceHotelDto): Promise<Response> {
+  async create(createServiceHotelDto: CreateServiceHotelDto): Promise<ApiResponse<null>> {
     try {
       const service = this.serviceRepository.create(createServiceHotelDto);
       await this.serviceRepository.save(service);
-      return new Response('Service created successfully', 201);
-    } catch (error) {
+      return new ApiResponse(true, null, 'Service created successfully', 201);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -27,7 +28,7 @@ export class ServiceHotelService {
     try {
       const services = await this.serviceRepository.find();
       return services.map((service) => new ServiceHotelResponse(service));
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -39,33 +40,33 @@ export class ServiceHotelService {
         throw new NotFoundException('Service not found');
       }
       return new ServiceHotelResponse(service);
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async update(id: string, updateServiceHotelDto: UpdateServiceHotelDto): Promise<Response> {
+  async update(id: string, updateServiceHotelDto: UpdateServiceHotelDto): Promise<ApiResponse<null>> {
     try {
       const service = await this.serviceRepository.findOne({ where: { id } });
       if (!service) {
         throw new NotFoundException('Service not found');
       }
       await this.serviceRepository.update(id, updateServiceHotelDto);
-      return new Response('Service updated successfully', 200);
-    } catch (error) {
+      return new ApiResponse(true, null, 'Service updated successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async remove(id: string): Promise<Response> {
+  async remove(id: string): Promise<ApiResponse<null>> {
     try {
       const service = await this.serviceRepository.findOne({ where: { id } });
       if (!service) {
         throw new NotFoundException('Service not found');
       }
       await this.serviceRepository.remove(service);
-      return new Response('Service deleted successfully', 200);
-    } catch (error) {
+      return new ApiResponse(true, null, 'Service deleted successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }

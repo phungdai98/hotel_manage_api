@@ -4,9 +4,10 @@ import { UpdateDetailOrderTicketDto } from './dto/update-detail-order-ticket.dto
 import { InjectRepository } from '@nestjs/typeorm';
 import { DetailOrderTicket } from 'src/model';
 import { Repository } from 'typeorm';
-import { Response } from 'src/common/response';
 import { DetailOrderTicketResponse } from './entities/detail-order-ticket.entity';
 import { OrderTicketStatusEnum } from 'src/common/enums/orderTicketStatus.enum';
+import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
+import { ApiResponse } from 'src/common/entities/typeResponse';
 
 @Injectable()
 export class DetailOrderTicketService {
@@ -15,11 +16,11 @@ export class DetailOrderTicketService {
     private detailOrderTicketRepository: Repository<DetailOrderTicket>,
   ) {}
 
-  async create(createDetailOrderTicketDto: CreateDetailOrderTicketDto): Promise<Response> {
+  async create(createDetailOrderTicketDto: CreateDetailOrderTicketDto): Promise<ApiResponse<null>> {
     try {
       await this.detailOrderTicketRepository.save(createDetailOrderTicketDto);
-      return new Response('Create detail order ticket successfully', 200);
-    } catch (error) {
+      return new ApiResponse(true, null, 'Create detail order ticket successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -28,7 +29,7 @@ export class DetailOrderTicketService {
     try {
       const result = await this.detailOrderTicketRepository.find();
       return result.map((item) => new DetailOrderTicketResponse(item));
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -55,7 +56,7 @@ export class DetailOrderTicketService {
         acc[row.rankRoomId] = Number(row.bookedQuantity);
         return acc;
       }, {} as Record<string, number>);
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -67,25 +68,25 @@ export class DetailOrderTicketService {
         throw new NotFoundException('Detail order ticket not found');
       }
       return new DetailOrderTicketResponse(result);
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async update(id: string, updateDetailOrderTicketDto: UpdateDetailOrderTicketDto): Promise<Response> {
+  async update(id: string, updateDetailOrderTicketDto: UpdateDetailOrderTicketDto): Promise<ApiResponse<null>> {
     try {
       await this.detailOrderTicketRepository.update(id, updateDetailOrderTicketDto);
-      return new Response(`Update detail ${id} order ticket successfully`, 200);
-    } catch (error) {
+      return new ApiResponse(true, null, `Update detail ${id} order ticket successfully`, 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async remove(id: string): Promise<Response> {
+  async remove(id: string): Promise<ApiResponse<null>> {
     try {
       await this.detailOrderTicketRepository.delete(id);
-      return new Response(`Delete detail ${id} order ticket successfully`, 200);
-    } catch (error) {
+      return new ApiResponse(true, null, `Delete detail ${id} order ticket successfully`, 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }

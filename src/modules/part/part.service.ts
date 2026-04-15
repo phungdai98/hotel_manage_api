@@ -5,17 +5,19 @@ import { PartResponse } from './entities/part.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Part } from 'src/model';
 import { Repository } from 'typeorm';
+import { ApiResponse } from 'src/common/entities/typeResponse';
+import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
 
 @Injectable()
 export class PartService {
   constructor(@InjectRepository(Part) private partRepository: Repository<Part>) {}
 
-  async create(createPartDto: CreatePartDto): Promise<PartResponse> {
+  async create(createPartDto: CreatePartDto): Promise<ApiResponse<null>> {
     try {
       const part = this.partRepository.create(createPartDto);
-      const savedPart = await this.partRepository.save(part);
-      return new PartResponse(savedPart);
-    } catch (error) {
+      await this.partRepository.save(part);
+      return new ApiResponse(true, null, 'Part created successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -24,7 +26,7 @@ export class PartService {
     try {
       const parts = await this.partRepository.find();
       return parts.map((part) => new PartResponse(part));
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -36,28 +38,29 @@ export class PartService {
         throw new BadRequestException(`Part (ID: ${id}) not found!`);
       }
       return new PartResponse(part);
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async update(id: string, updatePartDto: UpdatePartDto): Promise<PartResponse> {
+  async update(id: string, updatePartDto: UpdatePartDto): Promise<ApiResponse<null>> {
     try {
       await this.partRepository.update({ id }, updatePartDto);
-      return this.findOne(id);
-    } catch (error) {
+      return new ApiResponse(true, null, 'Part updated successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async remove(id: string): Promise<boolean> {
+  async remove(id: string): Promise<ApiResponse<null>> {
     try {
+      const part = await this.partRepository.findOneBy({ id });
+      if (!part) {
+        throw new BadRequestException(`Part (ID: ${id}) not found!`);
+      }
       await this.partRepository.delete({ id });
-      return true;
-    } catch (error) {
+      return new ApiResponse(true, null, 'Part deleted successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }

@@ -5,7 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DetailPriceRoom } from 'src/model';
 import { Repository } from 'typeorm';
 import { DetailPriceRoomResponse } from './entities/detail-price-room.entity';
-import { Response } from 'src/common/response';
+import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
+import { ApiResponse } from 'src/common/entities/typeResponse';
 
 @Injectable()
 export class DetailPriceRoomService {
@@ -13,11 +14,11 @@ export class DetailPriceRoomService {
     @InjectRepository(DetailPriceRoom)
     private detailPriceRoomRepository: Repository<DetailPriceRoom>,
   ) {}
-  async create(createDetailPriceRoomDto: CreateDetailPriceRoomDto): Promise<DetailPriceRoomResponse> {
+  async create(createDetailPriceRoomDto: CreateDetailPriceRoomDto): Promise<ApiResponse<null>> {
     try {
       const result = await this.detailPriceRoomRepository.save(createDetailPriceRoomDto);
-      return new DetailPriceRoomResponse(result);
-    } catch (error) {
+      return new ApiResponse(true, null, 'Detail price room created successfully', 201);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -26,7 +27,7 @@ export class DetailPriceRoomService {
     try {
       const result = await this.detailPriceRoomRepository.find();
       return result.map((item) => new DetailPriceRoomResponse(item));
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -38,25 +39,25 @@ export class DetailPriceRoomService {
         throw new NotFoundException('Detail price room not found');
       }
       return new DetailPriceRoomResponse(result);
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async update(id: string, updateDetailPriceRoomDto: UpdateDetailPriceRoomDto): Promise<Response> {
+  async update(id: string, updateDetailPriceRoomDto: UpdateDetailPriceRoomDto): Promise<ApiResponse<null>> {
     try {
       await this.detailPriceRoomRepository.update(id, updateDetailPriceRoomDto);
-      return new Response(`Update detail ${id} price room successfully`, 200);
-    } catch (error) {
+      return new ApiResponse(true, null, `Update detail ${id} price room successfully`, 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async remove(id: string): Promise<Response> {
+  async remove(id: string): Promise<ApiResponse<null>> {
     try {
       await this.detailPriceRoomRepository.delete(id);
-      return new Response(`Delete detail ${id} price room successfully`, 200);
-    } catch (error) {
+      return new ApiResponse(true, null, `Delete detail ${id} price room successfully`, 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }

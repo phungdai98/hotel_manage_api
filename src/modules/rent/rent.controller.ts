@@ -3,6 +3,8 @@ import { RentService } from './rent.service';
 import { CreateRentDto } from './dto/create-rent.dto';
 import { UpdateRentDto } from './dto/update-rent.dto';
 import { BaseController } from 'src/common/base.controller';
+import { ApiResponse } from 'src/common/entities/typeResponse';
+import { RentResponse } from './entities/rent.entity';
 
 @Controller('rent')
 export class RentController extends BaseController {
@@ -11,12 +13,12 @@ export class RentController extends BaseController {
   }
 
   @Post()
-  create(@Body() createRentDto: CreateRentDto) {
+  create(@Body() createRentDto: CreateRentDto): Promise<ApiResponse<null>> {
     return this.rentService.create(createRentDto);
   }
 
   @Get()
-  findAll() {
+  findAll(): Promise<RentResponse[]> {
     return this.rentService.findAll();
   }
 
@@ -26,12 +28,12 @@ export class RentController extends BaseController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateRentDto: UpdateRentDto) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateRentDto: UpdateRentDto): Promise<ApiResponse<null>> {
     return this.rentService.update(id, updateRentDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string): Promise<ApiResponse<null>> {
     return this.rentService.remove(id);
   }
 }

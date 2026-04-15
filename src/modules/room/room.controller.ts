@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { RoomService } from './room.service';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { BaseController } from 'src/common/base.controller';
+import { ApiResponse } from 'src/common/entities/typeResponse';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
-import { BaseController } from 'src/common/base.controller';
+import { RoomResponse } from './entities/room.entity';
+import { RoomService } from './room.service';
 
 @Controller('room')
 export class RoomController extends BaseController {
@@ -11,69 +13,29 @@ export class RoomController extends BaseController {
   }
 
   @Post()
-  create(@Body() createRoomDto: CreateRoomDto) {
-    try {
-      const result = this.roomService.create(createRoomDto);
-      if (!result) {
-        return { message: 'Room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  create(@Body() createRoomDto: CreateRoomDto): Promise<ApiResponse<null>> {
+    return this.roomService.create(createRoomDto);
   }
 
   @Get()
-  findAll() {
-    try {
-      const result = this.roomService.findAll();
-      if (!result) {
-        return { message: 'Room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  findAll(): Promise<RoomResponse[]> {
+    return this.roomService.findAll();
   }
 
 
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    try {
-      const result = this.roomService.findOne(id);
-      if (!result) {
-        return { message: 'Room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  findOne(@Param('id') id: string): Promise<RoomResponse> {
+    return this.roomService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto) {
-    try {
-      const result = this.roomService.update(id, updateRoomDto);
-      if (!result) {
-        return { message: 'Room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto): Promise<ApiResponse<null>> {
+    return this.roomService.update(id, updateRoomDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    try {
-      const result = this.roomService.remove(id);
-      if (!result) {
-        return { message: 'Room not found' };
-      }
-      return result;
-    } catch (error) {
-      return error;
-    }
+  remove(@Param('id') id: string): Promise<ApiResponse<null>> {
+    return this.roomService.remove(id);
   }
 }

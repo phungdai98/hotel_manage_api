@@ -4,8 +4,9 @@ import { UpdateStatusRoomDto } from './dto/update-status-room.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StatusRoom } from 'src/model';
 import { Repository } from 'typeorm';
-import { Response } from 'src/common/response';
 import { StatusRoomResponse } from './entities/status-room.entity';
+import { ApiResponse } from 'src/common/entities/typeResponse';
+import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
 
 @Injectable()
 export class StatusRoomService {
@@ -14,12 +15,12 @@ export class StatusRoomService {
     private readonly statusRoomRepository: Repository<StatusRoom>,
   ) {}
 
-  async create(createStatusRoomDto: CreateStatusRoomDto): Promise<Response> {
+  async create(createStatusRoomDto: CreateStatusRoomDto): Promise<ApiResponse<null>> {
     try {
       const statusRoom = this.statusRoomRepository.create(createStatusRoomDto);
       await this.statusRoomRepository.save(statusRoom);
-      return new Response('Status room created successfully', 201);
-    } catch (error) {
+      return new ApiResponse(true, null, 'Status room created successfully', 201);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -28,7 +29,7 @@ export class StatusRoomService {
     try {
       const statusRooms = await this.statusRoomRepository.find();
       return statusRooms.map((statusRoom) => new StatusRoomResponse(statusRoom));
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -40,33 +41,33 @@ export class StatusRoomService {
         throw new NotFoundException('Status room not found');
       }
       return new StatusRoomResponse(statusRoom);
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async update(id: string, updateStatusRoomDto: UpdateStatusRoomDto): Promise<Response> {
+  async update(id: string, updateStatusRoomDto: UpdateStatusRoomDto): Promise<ApiResponse<null>> {
     try {
       const statusRoom = await this.statusRoomRepository.findOne({ where: { id } });
       if (!statusRoom) {
         throw new NotFoundException('Status room not found');
       }
       await this.statusRoomRepository.update(id, updateStatusRoomDto);
-      return new Response('Status room updated successfully', 200);
-    } catch (error) {
+      return new ApiResponse(true, null, 'Status room updated successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async remove(id: string): Promise<Response> {
+  async remove(id: string): Promise<ApiResponse<null>> {
     try {
       const statusRoom = await this.statusRoomRepository.findOne({ where: { id } });
       if (!statusRoom) {
         throw new NotFoundException('Status room not found');
       }
       await this.statusRoomRepository.remove(statusRoom);
-      return new Response('Status room deleted successfully', 200);
-    } catch (error) {
+      return new ApiResponse(true, null, 'Status room deleted successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }

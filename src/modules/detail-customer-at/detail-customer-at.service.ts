@@ -4,21 +4,22 @@ import { UpdateDetailCustomerAtDto } from './dto/update-detail-customer-at.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DetailCustomerAt } from 'src/model';
 import { Repository } from 'typeorm';
-import { Response } from 'src/common/response';
 import { DetailCustomerAtResponse } from './entities/detail-customer-at.entity';
+import { ApiResponse } from 'src/common/entities/typeResponse';
+import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
 
 @Injectable()
 export class DetailCustomerAtService {
   constructor(
     @InjectRepository(DetailCustomerAt)
     private detailCustomerAtRepository: Repository<DetailCustomerAt>,
-  ) {}
+  ) { }
 
-  async create(createDetailCustomerAtDto: CreateDetailCustomerAtDto): Promise<Response> {
+  async create(createDetailCustomerAtDto: CreateDetailCustomerAtDto): Promise<ApiResponse<null>> {
     try {
       await this.detailCustomerAtRepository.save(createDetailCustomerAtDto);
-      return new Response('Create detail customer at successfully', 200);
-    } catch (error) {
+      return new ApiResponse(true, null, 'Create detail customer at successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -27,7 +28,7 @@ export class DetailCustomerAtService {
     try {
       const result = await this.detailCustomerAtRepository.find();
       return result.map((item) => new DetailCustomerAtResponse(item));
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -39,25 +40,25 @@ export class DetailCustomerAtService {
         throw new NotFoundException('Detail customer at not found');
       }
       return new DetailCustomerAtResponse(result);
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async update(id: string, updateDetailCustomerAtDto: UpdateDetailCustomerAtDto): Promise<Response> {
+  async update(id: string, updateDetailCustomerAtDto: UpdateDetailCustomerAtDto): Promise<ApiResponse<null>> {
     try {
       await this.detailCustomerAtRepository.update(id, updateDetailCustomerAtDto);
-      return new Response(`Update detail ${id} customer at successfully`, 200);
-    } catch (error) {
+      return new ApiResponse(true, null, `Update detail ${id} customer at successfully`, 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async remove(id: string): Promise<Response> {
+  async remove(id: string): Promise<ApiResponse<null>> {
     try {
       await this.detailCustomerAtRepository.delete(id);
-      return new Response(`Delete detail ${id} customer at successfully`, 200);
-    } catch (error) {
+      return new ApiResponse(true, null, `Delete detail ${id} customer at successfully`, 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }

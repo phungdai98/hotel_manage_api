@@ -1,10 +1,12 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { CreateCustomerDto } from './dto/create-customer.dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
 import { Customer } from 'src/model';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
+import { CreateCustomerDto } from './dto/create-customer.dto';
+import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CustomerResponse } from './entities/customer.entity';
+import { ApiResponse } from 'src/common/entities/typeResponse';
 
 @Injectable()
 export class CustomerService {
@@ -12,11 +14,12 @@ export class CustomerService {
     @InjectRepository(Customer)
     private customerRepository: Repository<Customer>,
   ) {}
-  async create(createCustomerDto: CreateCustomerDto) {
+  async create(createCustomerDto: CreateCustomerDto): Promise<ApiResponse<null>> {
     try {
-      const result = await this.customerRepository.save(createCustomerDto);
-      return result;
-    } catch (error) {
+      const customer = this.customerRepository.create(createCustomerDto);
+      await this.customerRepository.save(customer);
+      return new ApiResponse(true, null, 'Customer created successfully', 201);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -33,7 +36,7 @@ export class CustomerService {
         where: where,
       });
       return result.map((customer) => new CustomerResponse(customer));
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -45,31 +48,31 @@ export class CustomerService {
         throw new NotFoundException('Customer not found');
       }
       return new CustomerResponse(result);
-    } catch (error) {
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async update(id: string, updateCustomerDto: UpdateCustomerDto) {
+  async update(id: string, updateCustomerDto: UpdateCustomerDto): Promise<ApiResponse<null>> {
     try {
       const result = await this.customerRepository.update(id, updateCustomerDto);
       if (!result) {
         throw new NotFoundException('Customer not found');
       }
-      return result;
-    } catch (error) {
+      return new ApiResponse(true, null, 'Customer updated successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async remove(id: string): Promise<string> {
+  async remove(id: string): Promise<ApiResponse<null>> {
     try {
       const result = await this.customerRepository.delete(id);
       if (!result) {
         throw new NotFoundException('Customer not found');
       }
-      return id;
-    } catch (error) {
+      return new ApiResponse(true, null, 'Customer deleted successfully', 200);
+    } catch (error: ErrorResponseWithStatusCode) {
       throw new InternalServerErrorException(error.message);
     }
   }
