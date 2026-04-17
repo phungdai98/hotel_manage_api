@@ -8,7 +8,7 @@ export class CustomerResponse {
     phone: string;
     address: string;
     dateOfBirth: string;
-    point: number;
+    point: number | null;
 
     constructor(data: Customer) {
         this.id = data.id;
@@ -18,6 +18,6 @@ export class CustomerResponse {
         this.phone = data.phone;
         this.address = data.address;
         this.dateOfBirth = data.dateOfBirth.toISOString();
-        this.point = data.point;
+        this.point = data.point ?? 0;
     }
 }

@@ -1,4 +1,5 @@
 import { OrderTicket } from 'src/model';
+import { DetailOrderTicketResponse } from '../../detail-order-ticket/entities/detail-order-ticket.entity';
 
 export class OrderTicketResponse {
   id: string;
@@ -6,7 +7,9 @@ export class OrderTicketResponse {
   dateEnd: string;
   status: string;
   customerId: string;
-  userId: string;
+  userId: string | null;
+  deposit: number;
+  detailOrderTickets: DetailOrderTicketResponse[];
 
   constructor(orderTicket: OrderTicket) {
     this.id = orderTicket.id;
@@ -14,6 +17,13 @@ export class OrderTicketResponse {
     this.dateEnd = orderTicket.dateEnd.toISOString();
     this.status = orderTicket.status;
     this.customerId = orderTicket.customerId;
-    this.userId = orderTicket.userId;
+    this.userId = orderTicket.userId ?? null;
+    this.deposit = orderTicket.deposit ?? 0;
+    this.detailOrderTickets = orderTicket.detailOrderTickets
+      ? orderTicket.detailOrderTickets.map(
+          (detail) => new DetailOrderTicketResponse(detail),
+        )
+      : [];
   }
 }
+

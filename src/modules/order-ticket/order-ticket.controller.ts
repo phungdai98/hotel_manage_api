@@ -13,7 +13,7 @@ export class OrderTicketController extends BaseController {
   }
 
   @Post()
-  create(@Body() createOrderTicketDto: CreateOrderTicketDto): Promise<ApiResponse<null>> {
+  create(@Body() createOrderTicketDto: CreateOrderTicketDto): Promise<ApiResponse<OrderTicketResponse>> {
     return this.orderTicketService.create(createOrderTicketDto);
   }
 

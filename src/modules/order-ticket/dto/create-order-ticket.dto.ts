@@ -1,24 +1,36 @@
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { ArrayMinSize, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
 import { OrderTicketStatusEnum } from 'src/common/enums/orderTicketStatus.enum';
+import { CreateDetailOrderTicketDto } from "../../detail-order-ticket/dto/create-detail-order-ticket.dto";
+import { Type } from "class-transformer";
 
 export class CreateOrderTicketDto {
     @IsString()
     @IsNotEmpty()
-    dateStart: string;
+    dateStart!: string;
 
     @IsString()
     @IsNotEmpty()
-    dateEnd: string;
+    dateEnd!: string;
 
     @IsEnum(OrderTicketStatusEnum)
     @IsNotEmpty()
-    status: OrderTicketStatusEnum;
+    status!: OrderTicketStatusEnum;
 
     @IsString()
     @IsNotEmpty()
-    customerId: string;
+    customerId!: string;
 
     @IsString()
-    @IsNotEmpty()
-    userId: string;
+    @IsOptional()
+    userId?: string;
+
+    @IsNumber()
+    @IsOptional()
+    deposit?: number;
+
+    @Type(() => CreateDetailOrderTicketDto)
+    @ArrayMinSize(1)
+    @ValidateNested({ each: true })
+    details: CreateDetailOrderTicketDto[];
 }
+

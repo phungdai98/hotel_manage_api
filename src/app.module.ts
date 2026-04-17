@@ -27,6 +27,7 @@ import { RoomModule } from './modules/room/room.module';
 import { SaleModule } from './modules/sale/sale.module';
 import { ServiceHotelModule } from './modules/service-hotel/service-hotel.module';
 import { StatusRoomModule } from './modules/status-room/status-room.module';
+import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
@@ -71,6 +72,8 @@ import { StatusRoomModule } from './modules/status-room/status-room.module';
     SaleModule,
     ServiceHotelModule,
     StatusRoomModule,
+    OrderModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -11,7 +11,7 @@ export class AuthService {
         if (user?.password !== pass) {
             throw new UnauthorizedException('Tên đăng nhập hoặc mật khẩu không chính xác');
         }
-        const payload = { email: user.email, sub: user.id };
+        const payload = { email: user.email, sub: user.id, userId: user.id };
         const {
             password,
             ...result

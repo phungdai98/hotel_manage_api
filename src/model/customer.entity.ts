@@ -26,8 +26,8 @@ export class Customer {
     @Column({name: 'date_of_birth', type: 'timestamp'})
     dateOfBirth!: Date;
 
-    @Column()
-    point!: number;
+    @Column({name: 'point', nullable: true, type: 'int', default: 0})
+    point!: number | null;
 
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
     createdAt!: Date;

@@ -19,6 +19,9 @@ export class OrderTicket {
     @Column({name: 'status'})
     status!: string;
 
+    @Column({ name: 'deposit', type: 'int', nullable: true, default: 0 })
+    deposit!: number | null;
+
     @CreateDateColumn({name: 'created_at', type: 'timestamp'})
     createdAt!: Date;
 
@@ -35,12 +38,12 @@ export class OrderTicket {
     @JoinColumn({name: 'customer_id'})
     customer!: Customer;
 
-    @Column({ name: 'user_id' })
-    userId!: string;
+    @Column({ name: 'user_id', nullable: true })
+    userId?: string | null;
 
-    @ManyToOne(() => User, (user) => user.orderTickets)
-    @JoinColumn({name: 'user_id'})
-    user!: User;
+    @ManyToOne(() => User, (user) => user.orderTickets, { nullable: true })
+    @JoinColumn({ name: 'user_id' })
+    user?: User | null;
 
     @OneToMany(() => DetailStatus, (detailStatus) => detailStatus.orderTicket)
     detailStatuses!: DetailStatus[];
