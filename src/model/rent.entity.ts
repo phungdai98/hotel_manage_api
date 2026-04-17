@@ -4,6 +4,7 @@ import { Room } from "./room.entity";
 import { Bill } from "./bill.entity";
 import { DetailCustomerAt } from "./detailCustomerAt.entity";
 import { DetailService } from "./detailService.entity";
+import { Optional } from "@nestjs/common";
 
 @Entity('rent')
 export class Rent {
@@ -39,12 +40,13 @@ export class Rent {
     @JoinColumn({name: 'room_id'})
     room!: Room;
 
-    @Column({ name: 'bill_id' })
-    billId!: string;
+    @Column({ name: 'bill_id', nullable: true })
+    @Optional()
+    billId?: string | null;
 
-    @ManyToOne(() => Bill, (bill) => bill.rents)
+    @ManyToOne(() => Bill, (bill) => bill.rents, { nullable: true })
     @JoinColumn({name: 'bill_id'})
-    bill!: Bill;
+    bill?: Bill | null;
 
     @OneToMany(() => DetailCustomerAt, (detailCustomerAt) => detailCustomerAt.rent)
     detailCustomerAts!: DetailCustomerAt[];
