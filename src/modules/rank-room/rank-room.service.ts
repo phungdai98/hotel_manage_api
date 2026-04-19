@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateRankRoomDto } from './dto/create-rank-room.dto';
 import { UpdateRankRoomDto } from './dto/update-rank-room.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,7 +12,6 @@ import { RankRoomResponse } from './entities/rank-room.entity';
 import { DetailOrderTicketService } from '../detail-order-ticket/detail-order-ticket.service';
 import { DetailStatusService } from '../detail-status/detail-status.service';
 import { ApiResponse } from 'src/common/entities/typeResponse';
-import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
 
 @Injectable()
 export class RankRoomService {
@@ -20,13 +23,15 @@ export class RankRoomService {
     private readonly detailOrderTicketService: DetailOrderTicketService,
     private readonly detailStatusService: DetailStatusService,
   ) {}
-  async create(createRankRoomDto: CreateRankRoomDto): Promise<ApiResponse<null>> {
+  async create(
+    createRankRoomDto: CreateRankRoomDto,
+  ): Promise<ApiResponse<null>> {
     try {
       const rankRoom = this.rankRoomRepository.create(createRankRoomDto);
       await this.rankRoomRepository.save(rankRoom);
       return new ApiResponse(true, null, 'Rank room created successfully', 201);
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -36,14 +41,14 @@ export class RankRoomService {
         relations: ['kindRoom', 'typeRoom'],
       });
       return result.map((item) => new RankRoomResponse(item));
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
   async findOne(id: string): Promise<RankRoomResponse> {
     try {
-      const result = await this.rankRoomRepository.findOne({ 
+      const result = await this.rankRoomRepository.findOne({
         where: { id: id },
         relations: ['kindRoom', 'typeRoom'],
       });
@@ -51,38 +56,46 @@ export class RankRoomService {
         throw new BadRequestException(`Rank room (ID: ${id}) not found!`);
       }
       return new RankRoomResponse(result);
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
-  async update(id: string, updateRankRoomDto: UpdateRankRoomDto): Promise<ApiResponse<null>> {
+  async update(
+    id: string,
+    updateRankRoomDto: UpdateRankRoomDto,
+  ): Promise<ApiResponse<null>> {
     try {
-      const rankRoom = await this.rankRoomRepository.findOne({ where: { id: id } });
+      const rankRoom = await this.rankRoomRepository.findOne({
+        where: { id: id },
+      });
       if (!rankRoom) {
         throw new BadRequestException(`Rank room (ID: ${id}) not found!`);
       }
       rankRoom.urlImage = updateRankRoomDto.urlImage || rankRoom.urlImage;
-      rankRoom.limitPeople = updateRankRoomDto.limitPeople || rankRoom.limitPeople;
+      rankRoom.limitPeople =
+        updateRankRoomDto.limitPeople || rankRoom.limitPeople;
       rankRoom.kindRoomId = updateRankRoomDto.kindRoomId || rankRoom.kindRoomId;
       rankRoom.typeRoomId = updateRankRoomDto.typeRoomId || rankRoom.typeRoomId;
-      const result = await this.rankRoomRepository.save(rankRoom);
+      await this.rankRoomRepository.save(rankRoom);
       return new ApiResponse(true, null, 'Rank room updated successfully', 200);
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
   async remove(id: string): Promise<ApiResponse<null>> {
     try {
-      const rankRoom = await this.rankRoomRepository.findOne({ where: { id: id } });
+      const rankRoom = await this.rankRoomRepository.findOne({
+        where: { id: id },
+      });
       if (!rankRoom) {
         throw new BadRequestException(`Rank room (ID: ${id}) not found!`);
       }
       await this.rankRoomRepository.delete(id);
       return new ApiResponse(true, null, 'Rank room deleted successfully', 200);
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -93,7 +106,11 @@ export class RankRoomService {
     });
   }
 
-  async findAvailable(dateCheckIn: string, dateCheckOut: string, quantity: number): Promise<RankRoomResponse[]> {
+  async findAvailable(
+    dateCheckIn: string,
+    dateCheckOut: string,
+    quantity: number,
+  ): Promise<RankRoomResponse[]> {
     try {
       // 1. Lấy các hạng phòng thỏa mãn sức chứa
       const rankRooms = await this.findByLimitPeople(quantity);
@@ -106,24 +123,29 @@ export class RankRoomService {
         where: { rankRoomId: In(rankRoomIds) },
         select: ['rankRoomId'],
       });
-      const totalRoomCounts = rooms.reduce((acc, room) => {
-        acc[room.rankRoomId] = (acc[room.rankRoomId] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      const totalRoomCounts = rooms.reduce(
+        (acc, room) => {
+          acc[room.rankRoomId] = (acc[room.rankRoomId] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
 
       // 3. Lấy tổng số phòng đã đặt theo hạng trong khoảng ngày
-      const bookedQuantities = await this.detailOrderTicketService.countBookedQuantityByRankIds(
-        dateCheckIn,
-        dateCheckOut,
-        rankRoomIds,
-      );
+      const bookedQuantities =
+        await this.detailOrderTicketService.countBookedQuantityByRankIds(
+          dateCheckIn,
+          dateCheckOut,
+          rankRoomIds,
+        );
 
       // 4. Lấy tổng số phòng không thể dùng do bảo trì/hỏng trong khoảng ngày
-      const unavailableRoomCounts = await this.detailStatusService.countUnavailableRoomsByRankIds(
-        dateCheckIn,
-        dateCheckOut,
-        rankRoomIds,
-      );
+      const unavailableRoomCounts =
+        await this.detailStatusService.countUnavailableRoomsByRankIds(
+          dateCheckIn,
+          dateCheckOut,
+          rankRoomIds,
+        );
 
       // 5. Tính số phòng còn trống theo hạng
       return rankRooms
@@ -140,8 +162,8 @@ export class RankRoomService {
           return response;
         })
         .filter((rank): rank is RankRoomResponse => rank !== null);
-    } catch (error: any) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 }

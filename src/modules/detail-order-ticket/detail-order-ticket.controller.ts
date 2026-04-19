@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { DetailOrderTicketService } from './detail-order-ticket.service';
 import { CreateDetailOrderTicketDto } from './dto/create-detail-order-ticket.dto';
 import { UpdateDetailOrderTicketDto } from './dto/update-detail-order-ticket.dto';
@@ -8,12 +17,16 @@ import { DetailOrderTicketResponse } from './entities/detail-order-ticket.entity
 
 @Controller('detail-order-ticket')
 export class DetailOrderTicketController extends BaseController {
-  constructor(private readonly detailOrderTicketService: DetailOrderTicketService) {
+  constructor(
+    private readonly detailOrderTicketService: DetailOrderTicketService,
+  ) {
     super();
   }
 
   @Post()
-  create(@Body() createDetailOrderTicketDto: CreateDetailOrderTicketDto): Promise<ApiResponse<null>> {
+  create(
+    @Body() createDetailOrderTicketDto: CreateDetailOrderTicketDto,
+  ): Promise<ApiResponse<null>> {
     return this.detailOrderTicketService.create(createDetailOrderTicketDto);
   }
 
@@ -28,7 +41,10 @@ export class DetailOrderTicketController extends BaseController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateDetailOrderTicketDto: UpdateDetailOrderTicketDto): Promise<ApiResponse<null>> {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateDetailOrderTicketDto: UpdateDetailOrderTicketDto,
+  ): Promise<ApiResponse<null>> {
     return this.detailOrderTicketService.update(id, updateDetailOrderTicketDto);
   }
 

@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { DetailStatusService } from './detail-status.service';
 import { CreateDetailStatusDto } from './dto/create-detail-status.dto';
 import { UpdateDetailStatusDto } from './dto/update-detail-status.dto';
@@ -13,7 +22,9 @@ export class DetailStatusController extends BaseController {
   }
 
   @Post()
-  create(@Body() createDetailStatusDto: CreateDetailStatusDto): Promise<ApiResponse<null>> {
+  create(
+    @Body() createDetailStatusDto: CreateDetailStatusDto,
+  ): Promise<ApiResponse<null>> {
     return this.detailStatusService.create(createDetailStatusDto);
   }
 
@@ -28,7 +39,10 @@ export class DetailStatusController extends BaseController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateDetailStatusDto: UpdateDetailStatusDto): Promise<ApiResponse<null>> {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateDetailStatusDto: UpdateDetailStatusDto,
+  ): Promise<ApiResponse<null>> {
     return this.detailStatusService.update(id, updateDetailStatusDto);
   }
 

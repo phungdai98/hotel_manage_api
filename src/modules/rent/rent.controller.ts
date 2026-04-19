@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { RentService } from './rent.service';
 import { CreateRentDto } from './dto/create-rent.dto';
 import { UpdateRentDto } from './dto/update-rent.dto';
@@ -28,7 +37,10 @@ export class RentController extends BaseController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateRentDto: UpdateRentDto): Promise<ApiResponse<null>> {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateRentDto: UpdateRentDto,
+  ): Promise<ApiResponse<null>> {
     return this.rentService.update(id, updateRentDto);
   }
 

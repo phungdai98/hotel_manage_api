@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { DetailPriceRoomService } from './detail-price-room.service';
 import { CreateDetailPriceRoomDto } from './dto/create-detail-price-room.dto';
 import { UpdateDetailPriceRoomDto } from './dto/update-detail-price-room.dto';
@@ -13,7 +22,9 @@ export class DetailPriceRoomController extends BaseController {
   }
 
   @Post()
-  create(@Body() createDetailPriceRoomDto: CreateDetailPriceRoomDto): Promise<ApiResponse<null>> {
+  create(
+    @Body() createDetailPriceRoomDto: CreateDetailPriceRoomDto,
+  ): Promise<ApiResponse<null>> {
     return this.detailPriceRoomService.create(createDetailPriceRoomDto);
   }
 
@@ -23,12 +34,17 @@ export class DetailPriceRoomController extends BaseController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<DetailPriceRoomResponse> {
+  findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<DetailPriceRoomResponse> {
     return this.detailPriceRoomService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateDetailPriceRoomDto: UpdateDetailPriceRoomDto): Promise<ApiResponse<null>> {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateDetailPriceRoomDto: UpdateDetailPriceRoomDto,
+  ): Promise<ApiResponse<null>> {
     return this.detailPriceRoomService.update(id, updateDetailPriceRoomDto);
   }
 

@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { BillService } from './bill.service';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
@@ -18,7 +28,9 @@ export class BillController extends BaseController {
   }
 
   @Get()
-  findAll(@Query() query: { page: number; limit: number; search: string }): Promise<BillResponse[]> {
+  findAll(
+    @Query() query: { page: number; limit: number; search: string },
+  ): Promise<BillResponse[]> {
     return this.billService.findAll(query.page, query.limit, query.search);
   }
 
@@ -28,7 +40,10 @@ export class BillController extends BaseController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateBillDto: UpdateBillDto): Promise<ApiResponse<null>> {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateBillDto: UpdateBillDto,
+  ): Promise<ApiResponse<null>> {
     return this.billService.update(id, updateBillDto);
   }
 

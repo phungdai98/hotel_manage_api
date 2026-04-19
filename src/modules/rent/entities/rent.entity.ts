@@ -7,7 +7,7 @@ export class RentResponse {
   isPayed: boolean;
   rentTicketId: string;
   roomId: string;
-  billId: string;
+  billId: string | null;
 
   constructor(data: Rent) {
     this.id = data.id;
@@ -16,6 +16,6 @@ export class RentResponse {
     this.isPayed = data.isPayed;
     this.rentTicketId = data.rentTicketId;
     this.roomId = data.roomId;
-    this.billId = data.billId;
+    this.billId = data.billId || null;
   }
 }

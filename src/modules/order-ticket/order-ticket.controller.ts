@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { OrderTicketService } from './order-ticket.service';
 import { CreateOrderTicketDto } from './dto/create-order-ticket.dto';
 import { UpdateOrderTicketDto } from './dto/update-order-ticket.dto';
@@ -13,7 +22,9 @@ export class OrderTicketController extends BaseController {
   }
 
   @Post()
-  create(@Body() createOrderTicketDto: CreateOrderTicketDto): Promise<ApiResponse<OrderTicketResponse>> {
+  create(
+    @Body() createOrderTicketDto: CreateOrderTicketDto,
+  ): Promise<ApiResponse<OrderTicketResponse>> {
     return this.orderTicketService.create(createOrderTicketDto);
   }
 
@@ -23,12 +34,17 @@ export class OrderTicketController extends BaseController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<OrderTicketResponse | null> {
+  findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<OrderTicketResponse | null> {
     return this.orderTicketService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateOrderTicketDto: UpdateOrderTicketDto): Promise<ApiResponse<null>> {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateOrderTicketDto: UpdateOrderTicketDto,
+  ): Promise<ApiResponse<null>> {
     return this.orderTicketService.update(id, updateOrderTicketDto);
   }
 

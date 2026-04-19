@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { DetailSaleService } from './detail-sale.service';
 import { CreateDetailSaleDto } from './dto/create-detail-sale.dto';
 import { UpdateDetailSaleDto } from './dto/update-detail-sale.dto';
@@ -13,7 +22,9 @@ export class DetailSaleController extends BaseController {
   }
 
   @Post()
-  create(@Body() createDetailSaleDto: CreateDetailSaleDto): Promise<ApiResponse<null>> {
+  create(
+    @Body() createDetailSaleDto: CreateDetailSaleDto,
+  ): Promise<ApiResponse<null>> {
     return this.detailSaleService.create(createDetailSaleDto);
   }
 
@@ -28,7 +39,10 @@ export class DetailSaleController extends BaseController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateDetailSaleDto: UpdateDetailSaleDto): Promise<ApiResponse<null>> {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateDetailSaleDto: UpdateDetailSaleDto,
+  ): Promise<ApiResponse<null>> {
     return this.detailSaleService.update(id, updateDetailSaleDto);
   }
 

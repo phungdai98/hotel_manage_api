@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { ServiceHotelService } from './service-hotel.service';
 import { CreateServiceHotelDto } from './dto/create-service-hotel.dto';
 import { UpdateServiceHotelDto } from './dto/update-service-hotel.dto';
@@ -13,7 +22,9 @@ export class ServiceHotelController extends BaseController {
   }
 
   @Post()
-  create(@Body() createServiceHotelDto: CreateServiceHotelDto): Promise<ApiResponse<null>> {
+  create(
+    @Body() createServiceHotelDto: CreateServiceHotelDto,
+  ): Promise<ApiResponse<null>> {
     return this.serviceHotelService.create(createServiceHotelDto);
   }
 
@@ -23,12 +34,17 @@ export class ServiceHotelController extends BaseController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<ServiceHotelResponse> {
+  findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ServiceHotelResponse> {
     return this.serviceHotelService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateServiceHotelDto: UpdateServiceHotelDto): Promise<ApiResponse<null>> {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateServiceHotelDto: UpdateServiceHotelDto,
+  ): Promise<ApiResponse<null>> {
     return this.serviceHotelService.update(id, updateServiceHotelDto);
   }
 

@@ -1,12 +1,15 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { CreateRentDto } from './dto/create-rent.dto';
-import { UpdateRentDto } from './dto/update-rent.dto';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ApiResponse } from 'src/common/entities/typeResponse';
 import { Rent } from 'src/model';
 import { Repository } from 'typeorm';
+import { CreateRentDto } from './dto/create-rent.dto';
+import { UpdateRentDto } from './dto/update-rent.dto';
 import { RentResponse } from './entities/rent.entity';
-import { ApiResponse } from 'src/common/entities/typeResponse';
-import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
 
 @Injectable()
 export class RentService {
@@ -19,8 +22,8 @@ export class RentService {
       const rent = this.rentRepository.create(createRentDto);
       await this.rentRepository.save(rent);
       return new ApiResponse(true, null, 'Rent created successfully', 201);
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -28,8 +31,8 @@ export class RentService {
     try {
       const rents = await this.rentRepository.find();
       return rents.map((rent) => new RentResponse(rent));
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -40,12 +43,15 @@ export class RentService {
         throw new NotFoundException('Rent not found');
       }
       return new RentResponse(rent);
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
-  async update(id: string, updateRentDto: UpdateRentDto): Promise<ApiResponse<null>> {
+  async update(
+    id: string,
+    updateRentDto: UpdateRentDto,
+  ): Promise<ApiResponse<null>> {
     try {
       const rent = await this.rentRepository.findOne({ where: { id } });
       if (!rent) {
@@ -53,8 +59,8 @@ export class RentService {
       }
       await this.rentRepository.update(id, updateRentDto);
       return new ApiResponse(true, null, 'Rent updated successfully', 200);
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -66,8 +72,8 @@ export class RentService {
       }
       await this.rentRepository.remove(rent);
       return new ApiResponse(true, null, 'Rent deleted successfully', 200);
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 }

@@ -1,10 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
-import { StatusRoomService } from './status-room.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { BaseController } from 'src/common/base.controller';
+import { ApiResponse } from 'src/common/entities/typeResponse';
 import { CreateStatusRoomDto } from './dto/create-status-room.dto';
 import { UpdateStatusRoomDto } from './dto/update-status-room.dto';
-import { BaseController } from 'src/common/base.controller';
 import { StatusRoomResponse } from './entities/status-room.entity';
-import { ApiResponse } from 'src/common/entities/typeResponse';
+import { StatusRoomService } from './status-room.service';
 
 @Controller('status-room')
 export class StatusRoomController extends BaseController {
@@ -13,7 +22,9 @@ export class StatusRoomController extends BaseController {
   }
 
   @Post()
-  create(@Body() createStatusRoomDto: CreateStatusRoomDto): Promise<ApiResponse<null>> {
+  create(
+    @Body() createStatusRoomDto: CreateStatusRoomDto,
+  ): Promise<ApiResponse<null>> {
     return this.statusRoomService.create(createStatusRoomDto);
   }
 
@@ -28,7 +39,10 @@ export class StatusRoomController extends BaseController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateStatusRoomDto: UpdateStatusRoomDto): Promise<ApiResponse<null>> {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateStatusRoomDto: UpdateStatusRoomDto,
+  ): Promise<ApiResponse<null>> {
     return this.statusRoomService.update(id, updateStatusRoomDto);
   }
 

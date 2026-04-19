@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PartService } from './part.service';
 import { CreatePartDto } from './dto/create-part.dto';
 import { UpdatePartDto } from './dto/update-part.dto';
@@ -13,7 +21,9 @@ export class PartController extends BaseController {
   }
 
   @Post()
-  async create(@Body() createPartDto: CreatePartDto): Promise<ApiResponse<null>> {
+  async create(
+    @Body() createPartDto: CreatePartDto,
+  ): Promise<ApiResponse<null>> {
     return this.partService.create(createPartDto);
   }
 
@@ -28,7 +38,10 @@ export class PartController extends BaseController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updatePartDto: UpdatePartDto): Promise<ApiResponse<null>> {
+  async update(
+    @Param('id') id: string,
+    @Body() updatePartDto: UpdatePartDto,
+  ): Promise<ApiResponse<null>> {
     return this.partService.update(id, updatePartDto);
   }
 

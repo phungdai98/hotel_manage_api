@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
 import { ApiResponse } from 'src/common/entities/typeResponse';
 import { CreateRoomDto } from './dto/create-room.dto';
@@ -22,15 +30,16 @@ export class RoomController extends BaseController {
     return this.roomService.findAll();
   }
 
-
-
   @Get(':id')
   findOne(@Param('id') id: string): Promise<RoomResponse> {
     return this.roomService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto): Promise<ApiResponse<null>> {
+  update(
+    @Param('id') id: string,
+    @Body() updateRoomDto: UpdateRoomDto,
+  ): Promise<ApiResponse<null>> {
     return this.roomService.update(id, updateRoomDto);
   }
 

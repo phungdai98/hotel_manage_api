@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Param, ParseUUIDPipe } from '@nestjs/common';
-import { OrderService } from './order.service';
-import { OrderDto } from './dto/order.dto';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiResponse } from 'src/common/entities/typeResponse';
-import { OrderTicketResponse } from '../order-ticket/entities/order-ticket.entity';
 import { Public } from '../auth/decorators/public.decorator';
+import { OrderTicketResponse } from '../order-ticket/entities/order-ticket.entity';
+import { OrderDto } from './dto/order.dto';
+import { OrderService } from './order.service';
 
 @Controller('order')
 export class OrderController {
@@ -11,7 +11,9 @@ export class OrderController {
 
   @Post()
   @Public()
-  create(@Body() orderDto: OrderDto): Promise<ApiResponse<OrderTicketResponse>> {
+  create(
+    @Body() orderDto: OrderDto,
+  ): Promise<ApiResponse<OrderTicketResponse>> {
     return this.orderService.create(orderDto);
   }
 }

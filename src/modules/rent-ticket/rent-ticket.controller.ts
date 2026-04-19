@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { RentTicketService } from './rent-ticket.service';
 import { CreateRentTicketDto } from './dto/create-rent-ticket.dto';
 import { UpdateRentTicketDto } from './dto/update-rent-ticket.dto';
@@ -13,7 +22,9 @@ export class RentTicketController extends BaseController {
   }
 
   @Post()
-  create(@Body() createRentTicketDto: CreateRentTicketDto): Promise<ApiResponse<null>> {
+  create(
+    @Body() createRentTicketDto: CreateRentTicketDto,
+  ): Promise<ApiResponse<null>> {
     return this.rentTicketService.create(createRentTicketDto);
   }
 
@@ -28,7 +39,10 @@ export class RentTicketController extends BaseController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateRentTicketDto: UpdateRentTicketDto): Promise<ApiResponse<null>> {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateRentTicketDto: UpdateRentTicketDto,
+  ): Promise<ApiResponse<null>> {
     return this.rentTicketService.update(id, updateRentTicketDto);
   }
 

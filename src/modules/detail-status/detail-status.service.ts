@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateDetailStatusDto } from './dto/create-detail-status.dto';
 import { UpdateDetailStatusDto } from './dto/update-detail-status.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,8 +11,6 @@ import { LessThan, MoreThan, Repository } from 'typeorm';
 import { DetailStatusResponse } from './entities/detail-status.entity';
 import { StatusRoomEnum } from 'src/common/enums/statusRoomEnum';
 import { ApiResponse } from 'src/common/entities/typeResponse';
-import { ErrorResponseWithStatusCode } from 'src/common/entities/errorEntity';
-
 @Injectable()
 export class DetailStatusService {
   constructor(
@@ -16,65 +18,98 @@ export class DetailStatusService {
     private readonly detailStatusRepository: Repository<DetailStatus>,
   ) {}
 
-  async create(createDetailStatusDto: CreateDetailStatusDto): Promise<ApiResponse<null>> {
+  async create(
+    createDetailStatusDto: CreateDetailStatusDto,
+  ): Promise<ApiResponse<null>> {
     try {
-      const detailStatus = this.detailStatusRepository.create(createDetailStatusDto);
+      const detailStatus = this.detailStatusRepository.create(
+        createDetailStatusDto,
+      );
       await this.detailStatusRepository.save(detailStatus);
-      return new ApiResponse(true, null, `Create detail status successfully`, 200);
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+      return new ApiResponse(
+        true,
+        null,
+        `Create detail status successfully`,
+        200,
+      );
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
   async findAll(): Promise<DetailStatusResponse[]> {
     try {
       const detailStatuses = await this.detailStatusRepository.find();
-      return detailStatuses.map((detailStatus) => new DetailStatusResponse(detailStatus));
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+      return detailStatuses.map(
+        (detailStatus) => new DetailStatusResponse(detailStatus),
+      );
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
   async findOne(id: string): Promise<DetailStatusResponse> {
     try {
-      const detailStatus = await this.detailStatusRepository.findOne({ where: { id } });
+      const detailStatus = await this.detailStatusRepository.findOne({
+        where: { id },
+      });
       if (!detailStatus) {
         throw new NotFoundException(`Detail status ${id} not found`);
       }
       return new DetailStatusResponse(detailStatus);
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
-  async update(id: string, updateDetailStatusDto: UpdateDetailStatusDto): Promise<ApiResponse<null>> {
+  async update(
+    id: string,
+    updateDetailStatusDto: UpdateDetailStatusDto,
+  ): Promise<ApiResponse<null>> {
     try {
-      const detailStatus = await this.detailStatusRepository.findOne({ where: { id } });
+      const detailStatus = await this.detailStatusRepository.findOne({
+        where: { id },
+      });
       if (!detailStatus) {
         throw new NotFoundException(`Detail status ${id} not found`);
       }
       this.detailStatusRepository.merge(detailStatus, updateDetailStatusDto);
       await this.detailStatusRepository.save(detailStatus);
-      return new ApiResponse(true, null, `Update detail status ${id} successfully`, 200);
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+      return new ApiResponse(
+        true,
+        null,
+        `Update detail status ${id} successfully`,
+        200,
+      );
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
   async remove(id: string): Promise<ApiResponse<null>> {
     try {
-      const detailStatus = await this.detailStatusRepository.findOne({ where: { id } });
+      const detailStatus = await this.detailStatusRepository.findOne({
+        where: { id },
+      });
       if (!detailStatus) {
         throw new NotFoundException(`Detail status ${id} not found`);
       }
       await this.detailStatusRepository.remove(detailStatus);
-      return new ApiResponse(true, null, `Delete detail status ${id} successfully`, 200);
-    } catch (error: ErrorResponseWithStatusCode) {
-      throw new InternalServerErrorException(error.message);
+      return new ApiResponse(
+        true,
+        null,
+        `Delete detail status ${id} successfully`,
+        200,
+      );
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
-  async findBusyRoomIds(dateCheckIn: string, dateCheckOut: string): Promise<string[]> {
+  async findBusyRoomIds(
+    dateCheckIn: string,
+    dateCheckOut: string,
+  ): Promise<string[]> {
     // 1. Convert string sang Date và chuẩn hóa về 12:00 UTC để khớp với dữ liệu trong DB
     const checkIn = new Date(dateCheckIn);
 
@@ -118,9 +153,12 @@ export class DetailStatusService {
       .groupBy('room.rankRoomId')
       .getRawMany<{ rankRoomId: string; unavailableCount: string }>();
 
-    return rows.reduce((acc, row) => {
-      acc[row.rankRoomId] = Number(row.unavailableCount);
-      return acc;
-    }, {} as Record<string, number>);
+    return rows.reduce(
+      (acc, row) => {
+        acc[row.rankRoomId] = Number(row.unavailableCount);
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
   }
 }

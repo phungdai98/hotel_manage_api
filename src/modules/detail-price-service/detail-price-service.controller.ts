@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { DetailPriceServiceService } from './detail-price-service.service';
 import { CreateDetailPriceServiceDto } from './dto/create-detail-price-service.dto';
 import { UpdateDetailPriceServiceDto } from './dto/update-detail-price-service.dto';
@@ -8,12 +17,16 @@ import { DetailPriceServiceResponse } from './entities/detail-price-service.enti
 
 @Controller('detail-price-service')
 export class DetailPriceServiceController extends BaseController {
-  constructor(private readonly detailPriceServiceService: DetailPriceServiceService) {
+  constructor(
+    private readonly detailPriceServiceService: DetailPriceServiceService,
+  ) {
     super();
   }
 
   @Post()
-  create(@Body() createDetailPriceServiceDto: CreateDetailPriceServiceDto): Promise<ApiResponse<null>> {
+  create(
+    @Body() createDetailPriceServiceDto: CreateDetailPriceServiceDto,
+  ): Promise<ApiResponse<null>> {
     return this.detailPriceServiceService.create(createDetailPriceServiceDto);
   }
 
@@ -23,13 +36,21 @@ export class DetailPriceServiceController extends BaseController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<DetailPriceServiceResponse> {
+  findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<DetailPriceServiceResponse> {
     return this.detailPriceServiceService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateDetailPriceServiceDto: UpdateDetailPriceServiceDto): Promise<ApiResponse<null>> {
-    return this.detailPriceServiceService.update(id, updateDetailPriceServiceDto);
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateDetailPriceServiceDto: UpdateDetailPriceServiceDto,
+  ): Promise<ApiResponse<null>> {
+    return this.detailPriceServiceService.update(
+      id,
+      updateDetailPriceServiceDto,
+    );
   }
 
   @Delete(':id')

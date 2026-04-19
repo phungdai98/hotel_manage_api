@@ -1,20 +1,27 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { User } from "./user.entity";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
+import { User } from './user.entity';
 
 @Entity('part')
 export class Part {
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-    @Column({name: 'name'})
-    name!: string;
+  @Column({ name: 'name' })
+  name!: string;
 
-    @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt!: Date;
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+  createdAt!: Date;
 
-    @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
-    updatedAt!: Date;
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
+  updatedAt!: Date;
 
-    @OneToMany(() => User, (user) => user.part)
-    users!: User[];  
+  @OneToMany(() => User, (user) => user.part)
+  users!: User[];
 }

@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { KindRoomService } from './kind-room.service';
 import { CreateKindRoomDto } from './dto/create-kind-room.dto';
 import { UpdateKindRoomDto } from './dto/update-kind-room.dto';
@@ -15,7 +23,9 @@ export class KindRoomController extends BaseController {
   //Single Room , Double Room, Twin Room, Triple Room, Family Room, Connecting Room, Studio
 
   @Post()
-  async create(@Body() createKindRoomDto: CreateKindRoomDto): Promise<ApiResponse<null>> {
+  async create(
+    @Body() createKindRoomDto: CreateKindRoomDto,
+  ): Promise<ApiResponse<null>> {
     return this.kindRoomService.create(createKindRoomDto);
   }
 
@@ -30,7 +40,10 @@ export class KindRoomController extends BaseController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateKindRoomDto: UpdateKindRoomDto): Promise<ApiResponse<null>> {
+  async update(
+    @Param('id') id: string,
+    @Body() updateKindRoomDto: UpdateKindRoomDto,
+  ): Promise<ApiResponse<null>> {
     return this.kindRoomService.update(id, updateKindRoomDto);
   }
 
