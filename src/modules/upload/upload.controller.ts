@@ -8,6 +8,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { ApiResponse } from 'src/common/entities/typeResponse';
+import { IUploadApiResponse } from './entities/UploadEntity';
+import { UploadApiResponse } from 'cloudinary';
 
 @Controller('upload')
 export class UploadController {
@@ -21,18 +23,19 @@ export class UploadController {
     }
 
     try {
-      const result = await this.uploadService.uploadFile(file);
-      return new ApiResponse(
+      const result: UploadApiResponse =
+        await this.uploadService.uploadFile(file);
+      return new ApiResponse<IUploadApiResponse>(
         true,
         {
           url: result.secure_url,
           publicId: result.public_id,
-        },
+        } as IUploadApiResponse,
         'Upload image successfully',
         201,
       );
     } catch (error) {
-      throw new BadRequestException(error.message);
+      throw new BadRequestException((error as Error).message);
     }
   }
 }
