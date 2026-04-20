@@ -50,6 +50,8 @@ import { SaleModule } from './modules/sale/sale.module';
 import { ServiceHotelModule } from './modules/service-hotel/service-hotel.module';
 import { StatusRoomModule } from './modules/status-room/status-room.module';
 import { OrderModule } from './modules/order/order.module';
+import { UploadModule } from './modules/upload/upload.module';
+
 
 @Module({
   imports: [
@@ -115,6 +117,8 @@ import { OrderModule } from './modules/order/order.module';
     ServiceHotelModule,
     StatusRoomModule,
     OrderModule,
+    UploadModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],
