@@ -23,7 +23,7 @@ export class RentTicket {
   @Column({ name: 'date_start', type: 'timestamp' })
   dateStart!: Date;
 
-  @Column({ name: 'date_end', type: 'timestamp' })
+  @Column({ name: 'date_end', type: 'timestamp', nullable: true })
   dateEnd!: Date;
 
   @Column({ name: 'is_payed' })

@@ -24,7 +24,7 @@ export class RentTicketController extends BaseController {
   @Post()
   create(
     @Body() createRentTicketDto: CreateRentTicketDto,
-  ): Promise<ApiResponse<null>> {
+  ): Promise<ApiResponse<RentTicketResponse>> {
     return this.rentTicketService.create(createRentTicketDto);
   }
 

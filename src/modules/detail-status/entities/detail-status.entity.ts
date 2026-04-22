@@ -5,7 +5,7 @@ export class DetailStatusResponse {
   dateStart: string;
   dateEnd: string;
   roomId: string;
-  statusRoomId: string;
+  status: string;
   orderTicketId: string;
   
   constructor(detailStatus: DetailStatus) {
@@ -13,7 +13,7 @@ export class DetailStatusResponse {
     this.dateStart = detailStatus.dateStart.toISOString();
     this.dateEnd = detailStatus.dateEnd.toISOString();
     this.roomId = detailStatus.roomId;
-    this.statusRoomId = detailStatus.statusRoomId;
+    this.status = detailStatus.status;
     this.orderTicketId = detailStatus.orderTicketId;
   }
 }

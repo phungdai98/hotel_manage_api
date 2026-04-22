@@ -5,30 +5,62 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponse } from 'src/common/entities/typeResponse';
-import { RentTicket } from 'src/model';
-import { Repository } from 'typeorm';
+import { DetailStatus, OrderTicket, Rent, RentTicket } from 'src/model';
+import { DataSource, Repository } from 'typeorm';
 import { CreateRentTicketDto } from './dto/create-rent-ticket.dto';
 import { UpdateRentTicketDto } from './dto/update-rent-ticket.dto';
 import { RentTicketResponse } from './entities/rent-ticket.entity';
+import { StatusRoomEnum } from '../../common/enums/statusRoomEnum';
 
 @Injectable()
 export class RentTicketService {
   constructor(
     @InjectRepository(RentTicket)
     private rentTicketRepository: Repository<RentTicket>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(
     createRentTicketDto: CreateRentTicketDto,
-  ): Promise<ApiResponse<null>> {
+  ): Promise<ApiResponse<RentTicketResponse>> {
+    const queryRuner = this.dataSource.createQueryRunner();
+    await queryRuner.connect();
+    await queryRuner.startTransaction();
     try {
-      const rentTicket = this.rentTicketRepository.create(createRentTicketDto);
-      await this.rentTicketRepository.save(rentTicket);
+      const order = await queryRuner.manager.findOne(OrderTicket, {
+        where: { id: createRentTicketDto.orderTicketId },
+      });
+      if (!order) {
+        throw new NotFoundException('Order Not Found');
+      }
+      const { rents, ...rentTicketData } = createRentTicketDto;
+      const rentTicket = queryRuner.manager.create(RentTicket, {
+        ...rentTicketData,
+      });
+      const savedRentTicket = await queryRuner.manager.save(rentTicket);
+      if (rents && rents.length > 0) {
+        const rentEntities = rents.map((rent) => {
+          return queryRuner.manager.create(Rent, {
+            ...rent,
+            rentTicketId: savedRentTicket.id,
+          });
+        });
+        await queryRuner.manager.save(rentEntities);
+        const statusRoom = rents.map((rent) => {
+          return queryRuner.manager.create(DetailStatus, {
+            roomId: rent.roomId,
+            dateStart: savedRentTicket.dateStart,
+            dateEnd: savedRentTicket.dateEnd,
+            status: StatusRoomEnum.OCCUPIED,
+          });
+        });
+        await queryRuner.manager.save(statusRoom);
+      }
       return new ApiResponse(
         true,
-        null,
-        'Rent ticket created successfully',
-        201,
+        new RentTicketResponse(savedRentTicket),
+        'Rent ticket created',
+        200,
       );
     } catch (error) {
       throw new InternalServerErrorException((error as Error).message);

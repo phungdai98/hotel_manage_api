@@ -25,7 +25,6 @@ import {
   Room,
   Sale,
   Service,
-  StatusRoom,
   TypeRoom,
   User,
 } from './model';
@@ -48,10 +47,8 @@ import { RentTicketModule } from './modules/rent-ticket/rent-ticket.module';
 import { RoomModule } from './modules/room/room.module';
 import { SaleModule } from './modules/sale/sale.module';
 import { ServiceHotelModule } from './modules/service-hotel/service-hotel.module';
-import { StatusRoomModule } from './modules/status-room/status-room.module';
 import { OrderModule } from './modules/order/order.module';
 import { UploadModule } from './modules/upload/upload.module';
-
 
 @Module({
   imports: [
@@ -90,7 +87,6 @@ import { UploadModule } from './modules/upload/upload.module';
       Room,
       Sale,
       Service,
-      StatusRoom,
       TypeRoom,
       User,
     ]),
@@ -115,10 +111,8 @@ import { UploadModule } from './modules/upload/upload.module';
     RoomModule,
     SaleModule,
     ServiceHotelModule,
-    StatusRoomModule,
     OrderModule,
     UploadModule,
-
   ],
   controllers: [AppController],
   providers: [AppService],

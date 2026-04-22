@@ -17,6 +17,5 @@ export * from './rentTicket.entity';
 export * from './room.entity';
 export * from './sale.entity';
 export * from './service.entity';
-export * from './statusRoom.entity';
 export * from './typeRoom.entity';
 export * from './user.entity';

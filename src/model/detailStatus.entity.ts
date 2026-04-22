@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { OrderTicket } from './orderTicket.entity';
 import { Room } from './room.entity';
-import { StatusRoom } from './statusRoom.entity';
+import { StatusRoomEnum } from '../common/enums/statusRoomEnum';
 
 @Entity('detail_status')
 export class DetailStatus {
@@ -37,12 +37,8 @@ export class DetailStatus {
   @JoinColumn({ name: 'room_id' })
   room!: Room;
 
-  @Column({ name: 'status_room_id' })
-  statusRoomId!: string;
-
-  @ManyToOne(() => StatusRoom, (statusRoom) => statusRoom.detailStatuses)
-  @JoinColumn({ name: 'status_room_id' })
-  statusRoom!: StatusRoom;
+  @Column({ name: 'status', type: 'enum', enum: StatusRoomEnum })
+  status!: StatusRoomEnum;
 
   @Column({ name: 'order_ticket_id' })
   orderTicketId!: string;

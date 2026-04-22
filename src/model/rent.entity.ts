@@ -29,6 +29,9 @@ export class Rent {
   @Column({ name: 'is_payed' })
   isPayed!: boolean;
 
+  @Column({ name: 'date_leave', nullable: true, type: 'timestamp' })
+  dateLeave!: Date;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt!: Date;
 
