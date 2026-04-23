@@ -42,6 +42,9 @@ export class RentTicket {
   @JoinColumn({ name: 'order_ticket_id' })
   orderTicket!: OrderTicket;
 
+  @Column({ name: 'user_id' })
+  userId!: string;
+
   @ManyToOne(() => User, (user) => user.rentTickets)
   @JoinColumn({ name: 'user_id' })
   user!: User;

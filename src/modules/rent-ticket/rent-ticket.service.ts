@@ -22,6 +22,7 @@ export class RentTicketService {
 
   async create(
     createRentTicketDto: CreateRentTicketDto,
+    userId: string,
   ): Promise<ApiResponse<RentTicketResponse>> {
     const queryRuner = this.dataSource.createQueryRunner();
     await queryRuner.connect();
@@ -36,6 +37,7 @@ export class RentTicketService {
       const { rents, ...rentTicketData } = createRentTicketDto;
       const rentTicket = queryRuner.manager.create(RentTicket, {
         ...rentTicketData,
+        userId: userId,
       });
       const savedRentTicket = await queryRuner.manager.save(rentTicket);
       if (rents && rents.length > 0) {
@@ -56,6 +58,7 @@ export class RentTicketService {
         });
         await queryRuner.manager.save(statusRoom);
       }
+      await queryRuner.commitTransaction();
       return new ApiResponse(
         true,
         new RentTicketResponse(savedRentTicket),
@@ -63,7 +66,10 @@ export class RentTicketService {
         200,
       );
     } catch (error) {
+      await queryRuner.rollbackTransaction();
       throw new InternalServerErrorException((error as Error).message);
+    } finally {
+      await queryRuner.release();
     }
   }
 

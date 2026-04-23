@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/modules/users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { UserAuthResponse } from './entities/auth.entity';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,7 @@ export class AuthService {
         'Tên đăng nhập hoặc mật khẩu không chính xác',
       );
     }
-    const payload = { email: user.email, sub: user.id, userId: user.id };
+    const payload: UserAuthResponse = new UserAuthResponse({ email: user.email, sub: user.id, userId: user.id });
     const { ...result } = user;
     return {
       access_token: await this.jwtService.signAsync(payload),

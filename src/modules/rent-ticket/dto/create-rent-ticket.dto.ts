@@ -24,9 +24,6 @@ export class CreateRentTicketDto {
   customerId: string;
 
   @IsUUID()
-  userId: string;
-
-  @IsUUID()
   orderTicketId: string;
 
   @Type(() => CreateRentDto)
