@@ -139,7 +139,7 @@ export class DetailStatusService {
       .select('room.rankRoomId', 'rankRoomId')
       .addSelect('COUNT(DISTINCT detailStatus.roomId)', 'unavailableCount')
       .innerJoin('detailStatus.room', 'room')
-      .innerJoin('detailStatus.statusRoom', 'statusRoom')
+      .innerJoin('detailStatus.status', 'statusRoom')
       .where('room.rankRoomId IN (:...rankRoomIds)', { rankRoomIds })
       .andWhere('detailStatus.dateStart < :checkOut', { checkOut })
       .andWhere('detailStatus.dateEnd > :checkIn', { checkIn })
@@ -148,6 +148,7 @@ export class DetailStatusService {
           StatusRoomEnum.MAINTENANCE,
           StatusRoomEnum.BROKEN,
           StatusRoomEnum.OUT_OF_SERVICE,
+          StatusRoomEnum.OCCUPIED,
         ],
       })
       .groupBy('room.rankRoomId')

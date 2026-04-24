@@ -4,13 +4,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Room } from 'src/model';
+import { DetailStatus, Room } from 'src/model';
 import { Repository } from 'typeorm';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 
 import { ApiResponse } from 'src/common/entities/typeResponse';
 import { RoomResponse } from './entities/room.entity';
+import { StatusRoomEnum } from 'src/common/enums/statusRoomEnum';
 
 @Injectable()
 export class RoomService {
@@ -76,5 +77,42 @@ export class RoomService {
     } catch (error) {
       throw new InternalServerErrorException((error as Error).message);
     }
+  }
+
+  async findAvailableRoomsByRank(
+    dateCheckIn: string,
+    dateCheckOut: string,
+    rankRoomId: string,
+  ): Promise<RoomResponse[]> {
+    const checkIn = new Date(dateCheckIn);
+    const checkOut = new Date(dateCheckOut);
+
+    return this.roomRepository
+      .createQueryBuilder('room')
+      .where('room.rankRoomId = :rankRoomId', { rankRoomId })
+      .andWhere((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('1')
+          .from(DetailStatus, 'ds')
+          .where('ds.room_id = room.id')
+          .andWhere('ds.date_start < :checkOut')
+          .andWhere('ds.date_end > :checkIn')
+          .andWhere('ds.status IN (:...statusNames)')
+          .getQuery();
+        return 'NOT EXISTS ' + subQuery;
+      })
+      .setParameters({
+        checkIn,
+        checkOut,
+        statusNames: [
+          StatusRoomEnum.MAINTENANCE,
+          StatusRoomEnum.BROKEN,
+          StatusRoomEnum.OUT_OF_SERVICE,
+          StatusRoomEnum.OCCUPIED,
+        ],
+      })
+      .getMany()
+      .then((rooms) => rooms.map((room) => new RoomResponse(room)));
   }
 }

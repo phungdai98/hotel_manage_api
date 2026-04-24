@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
 import { ApiResponse } from 'src/common/entities/typeResponse';
@@ -28,6 +29,19 @@ export class RoomController extends BaseController {
   @Get()
   findAll(): Promise<RoomResponse[]> {
     return this.roomService.findAll();
+  }
+
+  @Get('available')
+  findAvailableRoomsByRank(
+    @Query('dateCheckIn') dateCheckIn: string,
+    @Query('dateCheckOut') dateCheckOut: string,
+    @Query('rankRoomId') rankRoomId: string,
+  ): Promise<RoomResponse[]> {
+    return this.roomService.findAvailableRoomsByRank(
+      dateCheckIn,
+      dateCheckOut,
+      rankRoomId,
+    );
   }
 
   @Get(':id')
