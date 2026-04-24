@@ -162,3 +162,21 @@ export class DetailStatusService {
     );
   }
 }
+
+// SELECT
+//   r.rank_room_id,
+//   COUNT(DISTINCT ds.room_id) AS blocked_rooms
+// FROM public.detail_status AS ds
+// JOIN public.room AS r
+//   ON ds.room_id = r.id
+// WHERE r.rank_room_id IN (
+//   '90aaf0ba-b97b-4a47-8eb6-e1e79dd8898c',
+//   '188f2e80-ae21-4d4c-9de1-157612ec9e01'
+// )
+// AND ds.status IN ('maintenance', 'broken', 'occupied', 'out_of_service')
+// AND tsrange(ds.date_start, ds.date_end)
+//     && tsrange(
+//          TIMESTAMP '2026-04-19 12:00:00',
+//          TIMESTAMP '2026-04-21 12:00:00'
+//        )
+// GROUP BY r.rank_room_id;
