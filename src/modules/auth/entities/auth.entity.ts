@@ -6,15 +6,8 @@ export class RequestLogin {
 }
 
 export class UserAuthResponse {
-  email: string;
-  userId: string;
-  sub: string;
-  role?: string;
-
-  constructor(user: Partial<UserAuthResponse>) {
-    this.email = user.email || "";
-    this.userId = user.userId || "";
-    this.sub = user.sub || "";
-    this.role = user.role || "";
-  }
+  email!: string;
+  userId!: string;
+  sub!: string;
+  role!: string;
 }

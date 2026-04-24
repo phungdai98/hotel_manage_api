@@ -10,12 +10,12 @@ export class RentTicketResponse {
   orderTicketId: string;
 
   constructor(data: RentTicket) {
-    this.id = data.id;
-    this.dateStart = data.dateStart.toISOString();
-    this.dateEnd = data.dateEnd.toISOString();
-    this.isPayed = data.isPayed;
-    this.customerId = data.customer.id;
-    this.userId = data.user.id;
-    this.orderTicketId = data.orderTicket.id;
+    this.id = data?.id || '';
+    this.dateStart = String(data?.dateStart);
+    this.dateEnd = String(data?.dateEnd);
+    this.isPayed = data?.isPayed || false;
+    this.customerId = data?.customerId || '';
+    this.userId = data?.userId || '';
+    this.orderTicketId = data?.orderTicketId || '';
   }
 }

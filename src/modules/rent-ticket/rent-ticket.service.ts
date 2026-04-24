@@ -1,4 +1,5 @@
 import {
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -24,41 +25,48 @@ export class RentTicketService {
     createRentTicketDto: CreateRentTicketDto,
     userId: string,
   ): Promise<ApiResponse<RentTicketResponse>> {
-    const queryRuner = this.dataSource.createQueryRunner();
-    await queryRuner.connect();
-    await queryRuner.startTransaction();
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      const order = await queryRuner.manager.findOne(OrderTicket, {
+      const order = await queryRunner.manager.findOne(OrderTicket, {
         where: { id: createRentTicketDto.orderTicketId },
       });
       if (!order) {
         throw new NotFoundException('Order Not Found');
       }
       const { rents, ...rentTicketData } = createRentTicketDto;
-      const rentTicket = queryRuner.manager.create(RentTicket, {
+      const rentTicket = queryRunner.manager.create(RentTicket, {
         ...rentTicketData,
         userId: userId,
+        dateStart: rentTicketData.checkInDate,
+        dateEnd: rentTicketData.checkOutDate,
       });
-      const savedRentTicket = await queryRuner.manager.save(rentTicket);
+      const savedRentTicket = await queryRunner.manager.save(rentTicket);
       if (rents && rents.length > 0) {
         const rentEntities = rents.map((rent) => {
-          return queryRuner.manager.create(Rent, {
+          return queryRunner.manager.create(Rent, {
             ...rent,
             rentTicketId: savedRentTicket.id,
           });
         });
-        await queryRuner.manager.save(rentEntities);
+        await queryRunner.manager.save(rentEntities);
+        console.log("vo 1");
+        
         const statusRoom = rents.map((rent) => {
-          return queryRuner.manager.create(DetailStatus, {
+          return queryRunner.manager.create(DetailStatus, {
             roomId: rent.roomId,
             dateStart: savedRentTicket.dateStart,
             dateEnd: savedRentTicket.dateEnd,
             status: StatusRoomEnum.OCCUPIED,
+            orderTicketId: savedRentTicket.orderTicketId,
           });
         });
-        await queryRuner.manager.save(statusRoom);
+        console.log("vo 2", statusRoom);
+        
+        await queryRunner.manager.save(statusRoom);
       }
-      await queryRuner.commitTransaction();
+      await queryRunner.commitTransaction();
       return new ApiResponse(
         true,
         new RentTicketResponse(savedRentTicket),
@@ -66,10 +74,15 @@ export class RentTicketService {
         200,
       );
     } catch (error) {
-      await queryRuner.rollbackTransaction();
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new InternalServerErrorException((error as Error).message);
     } finally {
-      await queryRuner.release();
+      await queryRunner.release();
     }
   }
 

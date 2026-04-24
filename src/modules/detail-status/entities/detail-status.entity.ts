@@ -6,7 +6,7 @@ export class DetailStatusResponse {
   dateEnd: string;
   roomId: string;
   status: string;
-  orderTicketId: string;
+  orderTicketId?: string;
   
   constructor(detailStatus: DetailStatus) {
     this.id = detailStatus.id;

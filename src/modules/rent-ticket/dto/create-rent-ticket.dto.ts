@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsBoolean,
@@ -6,8 +7,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-import { CreateRentDto } from '../../rent/dto/create-rent.dto';
+import { CreateRentTicketDetailDto } from '../../rent/dto/create-rent.dto';
 
 export class CreateRentTicketDto {
   @IsString()
@@ -26,8 +26,8 @@ export class CreateRentTicketDto {
   @IsUUID()
   orderTicketId: string;
 
-  @Type(() => CreateRentDto)
+  @Type(() => CreateRentTicketDetailDto)
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
-  rents: CreateRentDto[];
+  rents: CreateRentTicketDetailDto[];
 }

@@ -28,10 +28,11 @@ export class RentTicketController extends BaseController {
   @Post()
   @UseGuards(AuthGuard)
   create(
-    @Req() req: UserAuthResponse,
+    @Req() req,
     @Body() createRentTicketDto: CreateRentTicketDto,
   ): Promise<ApiResponse<RentTicketResponse>> {
-    const userId = req.userId;
+    const user = req.user as UserAuthResponse;
+    const userId = user.userId;
     return this.rentTicketService.create(createRentTicketDto, userId);
   }
 

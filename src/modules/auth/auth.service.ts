@@ -17,7 +17,12 @@ export class AuthService {
         'Tên đăng nhập hoặc mật khẩu không chính xác',
       );
     }
-    const payload: UserAuthResponse = new UserAuthResponse({ email: user.email, sub: user.id, userId: user.id });
+    const payload: UserAuthResponse = {
+      email: user.email,
+      sub: user.id,
+      userId: user.id,
+      role: user.role,
+    };
     const { ...result } = user;
     return {
       access_token: await this.jwtService.signAsync(payload),

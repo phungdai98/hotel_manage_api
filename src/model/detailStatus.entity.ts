@@ -40,21 +40,10 @@ export class DetailStatus {
   @Column({ name: 'status', type: 'enum', enum: StatusRoomEnum })
   status!: StatusRoomEnum;
 
-  @Column({ name: 'order_ticket_id' })
-  orderTicketId!: string;
+  @Column({ name: 'order_ticket_id', nullable: true })
+  orderTicketId?: string;
 
   @ManyToOne(() => OrderTicket, (orderTicket) => orderTicket.detailStatuses)
   @JoinColumn({ name: 'order_ticket_id' })
-  orderTicket!: OrderTicket;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  handleNoonTime() {
-    if (this.dateStart) {
-      this.dateStart.setUTCHours(12, 0, 0, 0);
-    }
-    if (this.dateEnd) {
-      this.dateEnd.setUTCHours(12, 0, 0, 0);
-    }
-  }
+  orderTicket?: OrderTicket;
 }
