@@ -35,7 +35,7 @@ export class ServiceHotelController extends BaseController {
 
   @Get(':id')
   findOne(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id') id: string,
   ): Promise<ServiceHotelResponse> {
     return this.serviceHotelService.findOne(id);
   }

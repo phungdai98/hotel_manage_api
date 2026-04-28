@@ -5,14 +5,19 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  Unique,
 } from 'typeorm';
 import { DetailService } from './detailService.entity';
 import { DetailPriceService } from './detailPriceService.entity';
 
 @Entity('service')
+@Unique(['code'])
 export class Service {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
+
+  @Column({ name: 'code' })
+  code!: string;
 
   @Column({ name: 'name' })
   name!: string;

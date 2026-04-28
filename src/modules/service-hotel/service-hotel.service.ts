@@ -9,7 +9,7 @@ import { Service } from 'src/model';
 import { Repository } from 'typeorm';
 import { CreateServiceHotelDto } from './dto/create-service-hotel.dto';
 import { UpdateServiceHotelDto } from './dto/update-service-hotel.dto';
-import { ServiceHotelResponse } from './entities/service-hotel.entity';
+import { IServiceHotelResponse, ServiceHotelResponse } from './entities/service-hotel.entity';
 
 @Injectable()
 export class ServiceHotelService {
@@ -31,16 +31,52 @@ export class ServiceHotelService {
 
   async findAll(): Promise<ServiceHotelResponse[]> {
     try {
-      const services = await this.serviceRepository.find();
+      const services = await this.serviceRepository
+        .createQueryBuilder('service')
+        .distinctOn(['service.id'])
+        .select([
+          'service.id AS id',
+          'service.code AS code',
+          'service.name AS name',
+          'detailPriceServices.price AS price',
+        ])
+        .innerJoin(
+          'service.detailPriceServices',
+          'detailPriceServices'
+        )
+        .where('detailPriceServices.activeDate <= :activeDate', {
+          activeDate: new Date().toISOString().split('T')[0],
+        })
+        .orderBy('service.id', 'ASC')
+        .addOrderBy('detailPriceServices.activeDate', 'DESC')
+        .getRawMany();
       return services.map((service) => new ServiceHotelResponse(service));
     } catch (error) {
       throw new InternalServerErrorException((error as Error).message);
     }
   }
 
-  async findOne(id: string): Promise<ServiceHotelResponse> {
+  async findOne(code: string): Promise<ServiceHotelResponse> {
     try {
-      const service = await this.serviceRepository.findOne({ where: { id } });
+      const service = await this.serviceRepository
+        .createQueryBuilder('service')
+        .select([
+          'service.id AS id',
+          'service.code AS code',
+          'service.name AS name',
+          'detailPriceServices.price AS price',
+        ])
+        .innerJoin(
+          'service.detailPriceServices',
+          'detailPriceServices'
+        )
+        .where('detailPriceServices.activeDate <= :activeDate', {
+          activeDate: new Date().toISOString().split('T')[0],
+        })
+        .andWhere('service.code = :code', { code })
+        .addOrderBy('detailPriceServices.activeDate', 'DESC')
+        .limit(1)
+        .getRawOne<IServiceHotelResponse>();
       if (!service) {
         throw new NotFoundException('Service not found');
       }

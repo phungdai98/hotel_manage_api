@@ -23,10 +23,11 @@ export class AuthService {
       userId: user.id,
       role: user.role,
     };
-    const { ...result } = user;
     return {
       access_token: await this.jwtService.signAsync(payload),
-      user: result,
+      email: user.email,
+      role: user.role,
+      phone: user.phone,
     };
   }
 }
