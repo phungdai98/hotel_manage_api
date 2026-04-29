@@ -51,19 +51,15 @@ export class RentTicketService {
           });
         });
         await queryRunner.manager.save(rentEntities);
-        console.log("vo 1");
-        
         const statusRoom = rents.map((rent) => {
           return queryRunner.manager.create(DetailStatus, {
             roomId: rent.roomId,
             dateStart: savedRentTicket.dateStart,
             dateEnd: savedRentTicket.dateEnd,
             status: StatusRoomEnum.OCCUPIED,
-            orderTicketId: savedRentTicket.orderTicketId,
+            rentTicketId: savedRentTicket.id,
           });
         });
-        console.log("vo 2", statusRoom);
-        
         await queryRunner.manager.save(statusRoom);
       }
       await queryRunner.commitTransaction();

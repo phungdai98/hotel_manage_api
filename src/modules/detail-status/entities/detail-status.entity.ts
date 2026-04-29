@@ -6,7 +6,7 @@ export class DetailStatusResponse {
   dateEnd: string;
   roomId: string;
   status: string;
-  orderTicketId?: string;
+  rentTicketId?: string;
   
   constructor(detailStatus: DetailStatus) {
     this.id = detailStatus.id;
@@ -14,6 +14,16 @@ export class DetailStatusResponse {
     this.dateEnd = detailStatus.dateEnd.toISOString();
     this.roomId = detailStatus.roomId;
     this.status = detailStatus.status;
-    this.orderTicketId = detailStatus.orderTicketId;
+    this.rentTicketId = detailStatus.rentTicketId;
+  }
+}
+
+export class RentTicketIdResponse {
+  rentTicketId: string;
+  roomId: string;
+
+  constructor(data: Partial<RentTicketIdResponse>) {
+    this.rentTicketId = data.rentTicketId || '';
+    this.roomId = data.roomId || '';
   }
 }

@@ -8,17 +8,25 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  Generated,
 } from 'typeorm';
 import { OrderTicket } from './orderTicket.entity';
 import { User } from './user.entity';
 import { Customer } from './customer.entity';
 import { Rent } from './rent.entity';
 import { Bill } from './bill.entity';
+import { DetailStatus } from './detailStatus.entity';
+import { Unique } from 'typeorm';
 
 @Entity('rent_ticket')
+@Unique(['code'])
 export class RentTicket {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
+
+  @Column({ name: 'code', type: 'bigint' })
+  @Generated('increment')
+  code!: number;
 
   @Column({ name: 'date_start', type: 'timestamp' })
   dateStart!: Date;
@@ -61,4 +69,7 @@ export class RentTicket {
 
   @OneToMany(() => Bill, (bill) => bill.rentTicket)
   bills!: Bill[];
+
+  @OneToMany(() => DetailStatus, (detailStatus) => detailStatus.rentTicket)
+  detailStatuses!: DetailStatus[];
 }

@@ -10,22 +10,41 @@ import { DetailService } from 'src/model';
 import { Repository } from 'typeorm';
 import { DetailServiceResponse } from './entities/detail-service.entity';
 import { ApiResponse } from 'src/common/entities/typeResponse';
+import { ServiceHotelService } from '../service-hotel/service-hotel.service';
+import { ServiceHotelResponse } from '../service-hotel/entities/service-hotel.entity';
+import { DetailStatusService } from '../detail-status/detail-status.service';
+import { RentTicketIdResponse } from '../detail-status/entities/detail-status.entity';
 
 @Injectable()
 export class DetailServiceService {
   constructor(
     @InjectRepository(DetailService)
-    private readonly detailServiceRepository: Repository<DetailService>,
+    private readonly _detailServiceRepository: Repository<DetailService>,
+    private readonly _serviceHotelService: ServiceHotelService,
+    private readonly _detailStatusService: DetailStatusService,
   ) {}
 
   async create(
     createDetailServiceDto: CreateDetailServiceDto,
   ): Promise<ApiResponse<null>> {
     try {
-      const detailService = this.detailServiceRepository.create(
-        createDetailServiceDto,
-      );
-      await this.detailServiceRepository.save(detailService);
+      const serviceHotel: ServiceHotelResponse = await this._serviceHotelService.findOne(createDetailServiceDto.serviceId);
+      if (!serviceHotel) {
+        throw new NotFoundException(`Service hotel ${createDetailServiceDto.serviceId} not found`);
+      }
+      const rentTicket: RentTicketIdResponse = await this._detailStatusService.findRentTicketIdByRoomName(createDetailServiceDto.roomName);
+      if (!rentTicket) {
+        throw new NotFoundException(`Rent ticket ${createDetailServiceDto.roomName} not found`);
+      }
+      const detailService = this._detailServiceRepository.create({
+        decription: `Service for ${rentTicket.roomId}-${rentTicket.rentTicketId}`,
+        amount: createDetailServiceDto.amount,
+        price: serviceHotel.price,
+        isPayed: false,
+        serviceId: createDetailServiceDto.serviceId,
+        rentId: rentTicket.rentTicketId,
+      });
+      await this._detailServiceRepository.save(detailService);
       return new ApiResponse(
         true,
         null,
@@ -39,7 +58,7 @@ export class DetailServiceService {
 
   async findAll(): Promise<DetailServiceResponse[]> {
     try {
-      const detailServices = await this.detailServiceRepository.find();
+      const detailServices = await this._detailServiceRepository.find();
       return detailServices.map(
         (detailService) => new DetailServiceResponse(detailService),
       );
@@ -50,7 +69,7 @@ export class DetailServiceService {
 
   async findOne(id: string): Promise<DetailServiceResponse> {
     try {
-      const detailService = await this.detailServiceRepository.findOne({
+      const detailService = await this._detailServiceRepository.findOne({
         where: { id },
       });
       if (!detailService) {
@@ -67,14 +86,14 @@ export class DetailServiceService {
     updateDetailServiceDto: UpdateDetailServiceDto,
   ): Promise<ApiResponse<null>> {
     try {
-      const detailService = await this.detailServiceRepository.findOne({
+      const detailService = await this._detailServiceRepository.findOne({
         where: { id },
       });
       if (!detailService) {
         throw new NotFoundException(`Detail service ${id} not found`);
       }
-      this.detailServiceRepository.merge(detailService, updateDetailServiceDto);
-      await this.detailServiceRepository.save(detailService);
+      this._detailServiceRepository.merge(detailService, updateDetailServiceDto);
+      await this._detailServiceRepository.save(detailService);
       return new ApiResponse(
         true,
         null,
@@ -88,13 +107,13 @@ export class DetailServiceService {
 
   async remove(id: string): Promise<ApiResponse<null>> {
     try {
-      const detailService = await this.detailServiceRepository.findOne({
+      const detailService = await this._detailServiceRepository.findOne({
         where: { id },
       });
       if (!detailService) {
         throw new NotFoundException(`Detail service ${id} not found`);
       }
-      await this.detailServiceRepository.remove(detailService);
+      await this._detailServiceRepository.remove(detailService);
       return new ApiResponse(
         true,
         null,

@@ -8,14 +8,16 @@ import { UpdateDetailStatusDto } from './dto/update-detail-status.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DetailStatus } from 'src/model';
 import { LessThan, MoreThan, Repository } from 'typeorm';
-import { DetailStatusResponse } from './entities/detail-status.entity';
+import { DetailStatusResponse, RentTicketIdResponse } from './entities/detail-status.entity';
 import { StatusRoomEnum } from 'src/common/enums/statusRoomEnum';
 import { ApiResponse } from 'src/common/entities/typeResponse';
+import { RoomService } from '../room/room.service';
 @Injectable()
 export class DetailStatusService {
   constructor(
     @InjectRepository(DetailStatus)
     private readonly detailStatusRepository: Repository<DetailStatus>,
+    private readonly roomService: RoomService,
   ) {}
 
   async create(
@@ -160,6 +162,31 @@ export class DetailStatusService {
       },
       {} as Record<string, number>,
     );
+  }
+
+  async findRentTicketIdByRoomName(roomName: string): Promise<RentTicketIdResponse> {
+    try {
+      const room = await this.roomService.findRoomIdByName(roomName);
+      if (!room) {
+        throw new NotFoundException('Room not found');
+      }
+      const detailStatuses = await this.detailStatusRepository.findOne({
+        select: {
+          rentTicketId: true,
+          roomId: true,
+        },
+        where: {
+          roomId: room.id,
+          status: StatusRoomEnum.OCCUPIED,
+        },
+      });
+      if (!detailStatuses) {
+        throw new NotFoundException('Detail status not found');
+      }
+      return new RentTicketIdResponse({rentTicketId: detailStatuses.rentTicketId, roomId: detailStatuses.roomId});
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
+    }
   }
 }
 

@@ -27,7 +27,7 @@ export class CreateRentTicketDto {
   orderTicketId: string;
 
   @Type(() => CreateRentTicketDetailDto)
-  @ArrayMinSize(1)
+  @ArrayMinSize(0)
   @ValidateNested({ each: true })
   rents: CreateRentTicketDetailDto[];
 }

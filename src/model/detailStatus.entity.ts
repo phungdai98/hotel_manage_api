@@ -12,6 +12,7 @@ import {
 import { OrderTicket } from './orderTicket.entity';
 import { Room } from './room.entity';
 import { StatusRoomEnum } from '../common/enums/statusRoomEnum';
+import { RentTicket } from './rentTicket.entity';
 
 @Entity('detail_status')
 export class DetailStatus {
@@ -40,10 +41,10 @@ export class DetailStatus {
   @Column({ name: 'status', type: 'enum', enum: StatusRoomEnum })
   status!: StatusRoomEnum;
 
-  @Column({ name: 'order_ticket_id', nullable: true })
-  orderTicketId?: string;
+  @Column({ name: 'rent_ticket_id', nullable: true })
+  rentTicketId?: string;
 
-  @ManyToOne(() => OrderTicket, (orderTicket) => orderTicket.detailStatuses)
-  @JoinColumn({ name: 'order_ticket_id' })
-  orderTicket?: OrderTicket;
+  @ManyToOne(() => RentTicket, (rentTicket) => rentTicket.detailStatuses)
+  @JoinColumn({ name: 'rent_ticket_id' })
+  rentTicket?: RentTicket;
 }

@@ -115,4 +115,16 @@ export class RoomService {
       .getMany()
       .then((rooms) => rooms.map((room) => new RoomResponse(room)));
   }
+
+  async findRoomIdByName(name: string): Promise<RoomResponse> {
+    try {
+      const room = await this.roomRepository.findOne({ where: { name: name } });
+      if (!room) {
+        throw new NotFoundException('Room not found');
+      }
+      return new RoomResponse(room);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
 }

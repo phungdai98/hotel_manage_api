@@ -2,23 +2,29 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Generated,
   JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { Customer } from './customer.entity';
 import { DetailOrderTicket } from './detailOrderTicket.entity';
-import { DetailStatus } from './detailStatus.entity';
 import { RentTicket } from './rentTicket.entity';
 import { User } from './user.entity';
 
 @Entity('order_ticket')
+@Unique(['code'])
 export class OrderTicket {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
+
+  @Column({ name: 'code', type: 'bigint' })
+  @Generated('increment')
+  code!: number;
 
   @Column({ name: 'date_start', type: 'timestamp' })
   dateStart!: Date;
@@ -57,9 +63,6 @@ export class OrderTicket {
   @ManyToOne(() => User, (user) => user.orderTickets, { nullable: true })
   @JoinColumn({ name: 'user_id' })
   user?: User | null;
-
-  @OneToMany(() => DetailStatus, (detailStatus) => detailStatus.orderTicket)
-  detailStatuses!: DetailStatus[];
 
   @OneToOne(() => RentTicket, (rentTicket) => rentTicket.orderTicket)
   rentTicket!: RentTicket;
