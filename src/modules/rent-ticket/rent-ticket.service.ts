@@ -30,7 +30,7 @@ export class RentTicketService {
     await queryRunner.startTransaction();
     try {
       const order = await queryRunner.manager.findOne(OrderTicket, {
-        where: { id: createRentTicketDto.orderTicketId },
+        where: { code: createRentTicketDto.orderCode },
       });
       if (!order) {
         throw new NotFoundException('Order Not Found');
@@ -41,6 +41,8 @@ export class RentTicketService {
         userId: userId,
         dateStart: rentTicketData.checkInDate,
         dateEnd: rentTicketData.checkOutDate,
+        orderTicketId: order.id,
+        isPayed: false,
       });
       const savedRentTicket = await queryRunner.manager.save(rentTicket);
       if (rents && rents.length > 0) {

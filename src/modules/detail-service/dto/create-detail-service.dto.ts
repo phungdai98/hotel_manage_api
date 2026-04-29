@@ -5,9 +5,9 @@ export class CreateDetailServiceDto {
     @IsNotEmpty()
     amount: number;
 
-    @IsUUID()
+    @IsString()
     @IsNotEmpty()
-    serviceId: string;
+    serviceCode: string;
 
     @IsString()
     @IsNotEmpty()

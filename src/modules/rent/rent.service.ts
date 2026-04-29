@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { CreateRentDto } from './dto/create-rent.dto';
 import { UpdateRentDto } from './dto/update-rent.dto';
 import { RentResponse } from './entities/rent.entity';
+import { RentTicketResponse } from '../rent-ticket/entities/rent-ticket.entity';
 
 @Injectable()
 export class RentService {
@@ -72,6 +73,18 @@ export class RentService {
       }
       await this.rentRepository.remove(rent);
       return new ApiResponse(true, null, 'Rent deleted successfully', 200);
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
+
+  async findIdRentFromRentTicketId(rentTicketId: string, roomId: string): Promise<RentResponse> {
+    try {
+      const rent = await this.rentRepository.findOne({ where: { rentTicketId, roomId } });
+      if (!rent) {
+        throw new NotFoundException('Rent not found');
+      }
+      return new RentResponse(rent);
     } catch (error) {
       throw new InternalServerErrorException((error as Error).message);
     }

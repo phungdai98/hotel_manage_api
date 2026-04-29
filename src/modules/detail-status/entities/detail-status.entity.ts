@@ -21,9 +21,11 @@ export class DetailStatusResponse {
 export class RentTicketIdResponse {
   rentTicketId: string;
   roomId: string;
+  rentId: string;
 
   constructor(data: Partial<RentTicketIdResponse>) {
     this.rentTicketId = data.rentTicketId || '';
     this.roomId = data.roomId || '';
+    this.rentId = data.rentId || '';
   }
 }

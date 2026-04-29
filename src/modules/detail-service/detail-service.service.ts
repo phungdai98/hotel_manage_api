@@ -27,22 +27,20 @@ export class DetailServiceService {
   async create(
     createDetailServiceDto: CreateDetailServiceDto,
   ): Promise<ApiResponse<null>> {
+    const [serviceHotel, rentTicket] = await Promise.all([
+      this._serviceHotelService.findOne(createDetailServiceDto.serviceCode),
+      this._detailStatusService.findRentTicketIdByRoomName(
+        createDetailServiceDto.roomName,
+      ),
+    ]);
     try {
-      const serviceHotel: ServiceHotelResponse = await this._serviceHotelService.findOne(createDetailServiceDto.serviceId);
-      if (!serviceHotel) {
-        throw new NotFoundException(`Service hotel ${createDetailServiceDto.serviceId} not found`);
-      }
-      const rentTicket: RentTicketIdResponse = await this._detailStatusService.findRentTicketIdByRoomName(createDetailServiceDto.roomName);
-      if (!rentTicket) {
-        throw new NotFoundException(`Rent ticket ${createDetailServiceDto.roomName} not found`);
-      }
       const detailService = this._detailServiceRepository.create({
         decription: `Service for ${rentTicket.roomId}-${rentTicket.rentTicketId}`,
         amount: createDetailServiceDto.amount,
         price: serviceHotel.price,
         isPayed: false,
-        serviceId: createDetailServiceDto.serviceId,
-        rentId: rentTicket.rentTicketId,
+        serviceId: serviceHotel.id,
+        rentId: rentTicket.rentId,
       });
       await this._detailServiceRepository.save(detailService);
       return new ApiResponse(
@@ -92,7 +90,10 @@ export class DetailServiceService {
       if (!detailService) {
         throw new NotFoundException(`Detail service ${id} not found`);
       }
-      this._detailServiceRepository.merge(detailService, updateDetailServiceDto);
+      this._detailServiceRepository.merge(
+        detailService,
+        updateDetailServiceDto,
+      );
       await this._detailServiceRepository.save(detailService);
       return new ApiResponse(
         true,

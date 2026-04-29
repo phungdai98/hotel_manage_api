@@ -12,22 +12,24 @@ import { DetailStatusResponse, RentTicketIdResponse } from './entities/detail-st
 import { StatusRoomEnum } from 'src/common/enums/statusRoomEnum';
 import { ApiResponse } from 'src/common/entities/typeResponse';
 import { RoomService } from '../room/room.service';
+import { RentService } from '../rent/rent.service';
 @Injectable()
 export class DetailStatusService {
   constructor(
     @InjectRepository(DetailStatus)
-    private readonly detailStatusRepository: Repository<DetailStatus>,
-    private readonly roomService: RoomService,
+    private readonly _detailStatusRepository: Repository<DetailStatus>,
+    private readonly _roomService: RoomService,
+    private readonly _rentService: RentService,
   ) {}
 
   async create(
     createDetailStatusDto: CreateDetailStatusDto,
   ): Promise<ApiResponse<null>> {
     try {
-      const detailStatus = this.detailStatusRepository.create(
+      const detailStatus = this._detailStatusRepository.create(
         createDetailStatusDto,
       );
-      await this.detailStatusRepository.save(detailStatus);
+      await this._detailStatusRepository.save(detailStatus);
       return new ApiResponse(
         true,
         null,
@@ -41,7 +43,7 @@ export class DetailStatusService {
 
   async findAll(): Promise<DetailStatusResponse[]> {
     try {
-      const detailStatuses = await this.detailStatusRepository.find();
+      const detailStatuses = await this._detailStatusRepository.find();
       return detailStatuses.map(
         (detailStatus) => new DetailStatusResponse(detailStatus),
       );
@@ -52,7 +54,7 @@ export class DetailStatusService {
 
   async findOne(id: string): Promise<DetailStatusResponse> {
     try {
-      const detailStatus = await this.detailStatusRepository.findOne({
+      const detailStatus = await this._detailStatusRepository.findOne({
         where: { id },
       });
       if (!detailStatus) {
@@ -69,14 +71,14 @@ export class DetailStatusService {
     updateDetailStatusDto: UpdateDetailStatusDto,
   ): Promise<ApiResponse<null>> {
     try {
-      const detailStatus = await this.detailStatusRepository.findOne({
+      const detailStatus = await this._detailStatusRepository.findOne({
         where: { id },
       });
       if (!detailStatus) {
         throw new NotFoundException(`Detail status ${id} not found`);
       }
-      this.detailStatusRepository.merge(detailStatus, updateDetailStatusDto);
-      await this.detailStatusRepository.save(detailStatus);
+      this._detailStatusRepository.merge(detailStatus, updateDetailStatusDto);
+      await this._detailStatusRepository.save(detailStatus);
       return new ApiResponse(
         true,
         null,
@@ -90,13 +92,13 @@ export class DetailStatusService {
 
   async remove(id: string): Promise<ApiResponse<null>> {
     try {
-      const detailStatus = await this.detailStatusRepository.findOne({
+      const detailStatus = await this._detailStatusRepository.findOne({
         where: { id },
       });
       if (!detailStatus) {
         throw new NotFoundException(`Detail status ${id} not found`);
       }
-      await this.detailStatusRepository.remove(detailStatus);
+      await this._detailStatusRepository.remove(detailStatus);
       return new ApiResponse(
         true,
         null,
@@ -118,7 +120,7 @@ export class DetailStatusService {
     const checkOut = new Date(dateCheckOut);
 
     // 2. Thực hiện truy vấn với đối tượng Date đã chuẩn hóa
-    const busyDetailStatuses = await this.detailStatusRepository.find({
+    const busyDetailStatuses = await this._detailStatusRepository.find({
       where: {
         dateStart: LessThan(checkOut),
         dateEnd: MoreThan(checkIn),
@@ -136,7 +138,7 @@ export class DetailStatusService {
     const checkIn = new Date(dateCheckIn);
     const checkOut = new Date(dateCheckOut);
 
-    const rows = await this.detailStatusRepository
+    const rows = await this._detailStatusRepository
       .createQueryBuilder('detailStatus')
       .select('room.rankRoomId', 'rankRoomId')
       .addSelect('COUNT(DISTINCT detailStatus.roomId)', 'unavailableCount')
@@ -166,11 +168,11 @@ export class DetailStatusService {
 
   async findRentTicketIdByRoomName(roomName: string): Promise<RentTicketIdResponse> {
     try {
-      const room = await this.roomService.findRoomIdByName(roomName);
+      const room = await this._roomService.findRoomIdByName(roomName);
       if (!room) {
         throw new NotFoundException('Room not found');
       }
-      const detailStatuses = await this.detailStatusRepository.findOne({
+      const detailStatuses = await this._detailStatusRepository.findOne({
         select: {
           rentTicketId: true,
           roomId: true,
@@ -183,7 +185,11 @@ export class DetailStatusService {
       if (!detailStatuses) {
         throw new NotFoundException('Detail status not found');
       }
-      return new RentTicketIdResponse({rentTicketId: detailStatuses.rentTicketId, roomId: detailStatuses.roomId});
+      const rent = await this._rentService.findIdRentFromRentTicketId(detailStatuses.rentTicketId || "", detailStatuses.roomId);
+      if (!rent) {
+        throw new NotFoundException('Rent not found');
+      }
+      return new RentTicketIdResponse({rentTicketId: detailStatuses.rentTicketId, roomId: rent.roomId, rentId: rent.id});
     } catch (error) {
       throw new InternalServerErrorException((error as Error).message);
     }

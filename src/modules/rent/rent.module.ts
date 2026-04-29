@@ -8,5 +8,6 @@ import { Rent } from 'src/model';
   imports: [TypeOrmModule.forFeature([Rent])],
   controllers: [RentController],
   providers: [RentService],
+  exports: [RentService],
 })
 export class RentModule {}

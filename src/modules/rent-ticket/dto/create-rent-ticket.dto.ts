@@ -2,10 +2,11 @@ import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsBoolean,
+  IsInt,
   IsOptional,
   IsString,
   IsUUID,
-  ValidateNested,
+  ValidateNested
 } from 'class-validator';
 import { CreateRentTicketDetailDto } from '../../rent/dto/create-rent.dto';
 
@@ -23,8 +24,9 @@ export class CreateRentTicketDto {
   @IsUUID()
   customerId: string;
 
-  @IsUUID()
-  orderTicketId: string;
+  @IsInt()
+  @IsOptional()
+  orderCode?: number;
 
   @Type(() => CreateRentTicketDetailDto)
   @ArrayMinSize(0)
