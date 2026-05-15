@@ -14,6 +14,7 @@ import { UpdateRankRoomDto } from './dto/update-rank-room.dto';
 import { BaseController } from 'src/common/base.controller';
 import { ApiResponse } from 'src/common/entities/typeResponse';
 import { RankRoomResponse } from './entities/rank-room.entity';
+import { Public } from '../auth/decorators/public.decorator';
 
 @Controller('rank-room')
 export class RankRoomController extends BaseController {
@@ -34,6 +35,7 @@ export class RankRoomController extends BaseController {
   }
 
   @Get('available')
+  @Public()
   async findAvailable(
     @Query('dateCheckIn') dateCheckIn: string,
     @Query('dateCheckOut') dateCheckOut: string,

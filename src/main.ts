@@ -15,6 +15,12 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+
+  app.enableCors({
+    origin: 'http://localhost:3000', // Cổng Next.js mặc định
+    credentials: true, // Cho phép gửi cookies và headers
+  });
+
   await app.listen(process.env.PORT ?? 8080);
 }
 bootstrap();

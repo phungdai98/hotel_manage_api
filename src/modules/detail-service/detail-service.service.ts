@@ -3,17 +3,15 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateDetailServiceDto } from './dto/create-detail-service.dto';
-import { UpdateDetailServiceDto } from './dto/update-detail-service.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ApiResponse } from 'src/common/entities/typeResponse';
 import { DetailService } from 'src/model';
 import { Repository } from 'typeorm';
-import { DetailServiceResponse } from './entities/detail-service.entity';
-import { ApiResponse } from 'src/common/entities/typeResponse';
-import { ServiceHotelService } from '../service-hotel/service-hotel.service';
-import { ServiceHotelResponse } from '../service-hotel/entities/service-hotel.entity';
 import { DetailStatusService } from '../detail-status/detail-status.service';
-import { RentTicketIdResponse } from '../detail-status/entities/detail-status.entity';
+import { ServiceHotelService } from '../service-hotel/service-hotel.service';
+import { CreateDetailServiceDto } from './dto/create-detail-service.dto';
+import { UpdateDetailServiceDto } from './dto/update-detail-service.dto';
+import { DetailServiceResponse } from './entities/detail-service.entity';
 
 @Injectable()
 export class DetailServiceService {
