@@ -9,9 +9,11 @@ export class RankRoomResponse {
   typeRoomName: string;
   kindRoomName: string;
   availableCount?: number;
+  price: number;
 
   constructor(
-    data: RankRoom ,
+    data: RankRoom,
+    price?: number
   ) {
     this.id = data.id;
     this.urlImage = data.urlImage;
@@ -20,5 +22,6 @@ export class RankRoomResponse {
     this.typeRoomId = data.typeRoomId;
     this.typeRoomName = data.typeRoom?.name || '';
     this.kindRoomName = data.kindRoom?.name || '';
+    this.price = price || 0;
   }
 }

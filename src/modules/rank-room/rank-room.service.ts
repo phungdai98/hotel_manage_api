@@ -106,6 +106,31 @@ export class RankRoomService {
     });
   }
 
+  private async findByRankRoomPriceByIds(
+    rankRoomIds: string[],
+  ): Promise<Map<string, number>> {
+    try {
+      const rankRoomPrices: { id: string; price: number }[] =
+      await this.rankRoomRepository
+        .createQueryBuilder('rankRoom')
+        .distinctOn(['rankRoom.id'])
+        .select(['rankRoom.id as id', 'detailPriceRoom.price as price'])
+        .innerJoin('rankRoom.detailPriceRooms', 'detailPriceRoom')
+        .where('rankRoom.id IN (:...rankRoomIds)', { rankRoomIds })
+        .andWhere('detailPriceRoom.activeDate <= :activeDate', {
+          activeDate: new Date().toISOString().split('T')[0],
+        })
+        .getRawMany();
+    const mapRankRoomPrices = new Map<string, number>();
+    rankRoomPrices.forEach((item) => {
+      mapRankRoomPrices.set(item.id, item.price);
+    });
+    return mapRankRoomPrices;
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
+
   async findAvailable(
     dateCheckIn: string,
     dateCheckOut: string,
@@ -117,6 +142,7 @@ export class RankRoomService {
       if (!rankRooms.length) return [];
 
       const rankRoomIds = rankRooms.map((r) => r.id);
+      const rankRoomPrices = await this.findByRankRoomPriceByIds(rankRoomIds);
 
       // 2. Lấy tổng số phòng trong mỗi hạng
       const rooms = await this.roomRepository.find({
@@ -157,7 +183,7 @@ export class RankRoomService {
 
           if (availableCount <= 0) return null;
 
-          const response = new RankRoomResponse(rank);
+          const response = new RankRoomResponse(rank, rankRoomPrices.get(rank.id));
           response.availableCount = availableCount;
           return response;
         })
