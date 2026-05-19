@@ -3,6 +3,7 @@ import { DetailOrderTicketResponse } from '../../detail-order-ticket/entities/de
 
 export class OrderTicketResponse {
   id: string;
+  code: number;
   dateStart: string;
   dateEnd: string;
   status: string;
@@ -13,6 +14,7 @@ export class OrderTicketResponse {
 
   constructor(orderTicket: OrderTicket) {
     this.id = orderTicket.id;
+    this.code = orderTicket.code;
     this.dateStart = orderTicket.dateStart.toISOString();
     this.dateEnd = orderTicket.dateEnd.toISOString();
     this.status = orderTicket.status;

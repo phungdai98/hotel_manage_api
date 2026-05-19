@@ -23,6 +23,9 @@ export class Rent {
   @Column({ name: 'surcharge' })
   surcharge!: number;
 
+  @Column({ name: 'current_price_room', nullable: true })
+  currentPriceRoom!: number;
+
   @Column({ name: 'reason', type: 'jsonb', default: {} })
   reason!: Record<string, string>;
 

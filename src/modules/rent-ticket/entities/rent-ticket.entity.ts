@@ -2,6 +2,7 @@ import { RentTicket } from 'src/model';
 
 export class RentTicketResponse {
   id: string;
+  code: number;
   dateStart: string;
   dateEnd: string;
   isPayed: boolean;
@@ -11,6 +12,7 @@ export class RentTicketResponse {
 
   constructor(data: RentTicket) {
     this.id = data?.id || '';
+    this.code = data?.code || 0;
     this.dateStart = String(data?.dateStart);
     this.dateEnd = String(data?.dateEnd);
     this.isPayed = data?.isPayed || false;

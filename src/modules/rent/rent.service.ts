@@ -78,9 +78,13 @@ export class RentService {
     }
   }
 
-  async findIdRentFromRentTicketId(rentTicketId: string, roomId: string): Promise<RentResponse> {
+  async findIdRentFromRentTicketId(rentTicketId: string, roomId: string, isPayed?: boolean): Promise<RentResponse> {
     try {
-      const rent = await this.rentRepository.findOne({ where: { rentTicketId, roomId } });
+      let where: { rentTicketId: string, roomId: string, isPayed?: boolean } = { rentTicketId, roomId };
+      if(isPayed !== undefined){
+        where.isPayed = isPayed;
+      }
+      const rent = await this.rentRepository.findOne({ where });
       if (!rent) {
         throw new NotFoundException('Rent not found');
       }
