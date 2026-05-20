@@ -44,7 +44,7 @@ export class RentTicketService {
         });
       }
       if (!customerId) {
-        const customer = await queryRunner.manager.create(Customer, {
+        const customer = queryRunner.manager.create(Customer, {
           ...createRentTicketDto.customer,
         });
         const savedCustomer = await queryRunner.manager.save(customer);
@@ -52,7 +52,7 @@ export class RentTicketService {
       }
       const { rents, ...rentTicketData } = createRentTicketDto;
       const rentTicket = queryRunner.manager.create(RentTicket, {
-        ...rentTicketData,
+        customerId: customerId,
         userId: userId,
         dateStart: rentTicketData.checkInDate,
         dateEnd: rentTicketData.checkOutDate,
