@@ -22,7 +22,7 @@ export class RankRoomService {
     private roomRepository: Repository<Room>,
     private readonly detailOrderTicketService: DetailOrderTicketService,
     private readonly detailStatusService: DetailStatusService,
-  ) {}
+  ) { }
   async create(
     createRankRoomDto: CreateRankRoomDto,
   ): Promise<ApiResponse<null>> {
@@ -111,21 +111,67 @@ export class RankRoomService {
   ): Promise<Map<string, number>> {
     try {
       const rankRoomPrices: { id: string; price: number }[] =
-      await this.rankRoomRepository
-        .createQueryBuilder('rankRoom')
-        .distinctOn(['rankRoom.id'])
-        .select(['rankRoom.id as id', 'detailPriceRoom.price as price'])
-        .innerJoin('rankRoom.detailPriceRooms', 'detailPriceRoom')
-        .where('rankRoom.id IN (:...rankRoomIds)', { rankRoomIds })
-        .andWhere('detailPriceRoom.activeDate <= :activeDate', {
-          activeDate: new Date().toISOString().split('T')[0],
-        })
-        .getRawMany();
-    const mapRankRoomPrices = new Map<string, number>();
-    rankRoomPrices.forEach((item) => {
-      mapRankRoomPrices.set(item.id, item.price);
-    });
-    return mapRankRoomPrices;
+        await this.rankRoomRepository
+          .createQueryBuilder('rankRoom')
+          .distinctOn(['rankRoom.id'])
+          .select(['rankRoom.id as id', 'detailPriceRoom.price as price'])
+          .innerJoin('rankRoom.detailPriceRooms', 'detailPriceRoom')
+          .where('rankRoom.id IN (:...rankRoomIds)', { rankRoomIds })
+          .andWhere('detailPriceRoom.activeDate <= :activeDate', {
+            activeDate: new Date().toISOString().split('T')[0],
+          })
+          .getRawMany();
+      const mapRankRoomPrices = new Map<string, number>();
+      rankRoomPrices.forEach((item) => {
+        mapRankRoomPrices.set(item.id, item.price);
+      });
+      return mapRankRoomPrices;
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
+
+  private async findByRankRoomPriceById(
+    rankRoomId: string,
+  ): Promise<Map<string, number>> {
+    try {
+      const rankRoomPrices: { id: string; price: number } | undefined =
+        await this.rankRoomRepository
+          .createQueryBuilder('rankRoom')
+          .distinctOn(['rankRoom.id'])
+          .select(['rankRoom.id as id', 'detailPriceRoom.price as price'])
+          .innerJoin('rankRoom.detailPriceRooms', 'detailPriceRoom')
+          .where('rankRoom.id = :rankRoomId', { rankRoomId })
+          .andWhere('detailPriceRoom.activeDate <= :activeDate', {
+            activeDate: new Date().toISOString().split('T')[0],
+          })
+          .getRawOne();
+      if (!rankRoomPrices) {
+        throw new BadRequestException(`Not found price with rankRoomId: ${rankRoomId}`);
+      }
+      const mapRankRoomPrices = new Map<string, number>();
+      mapRankRoomPrices.set(rankRoomPrices.id, rankRoomPrices.price);
+      return mapRankRoomPrices;
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
+
+  async findByRankRoomPriceByRoomIds(
+    roomIds: string[],
+  ): Promise<Map<string, number>> {
+    try {
+      const rooms = await this.roomRepository.find({
+        where: { id: In(roomIds) },
+      });
+      const rankRoomIds = rooms.map((room) => room.rankRoomId);
+      const rankRoomConcat = [...new Set(rankRoomIds)];
+      const rankRoomPrices: Map<string, number> = await this.findByRankRoomPriceByIds(rankRoomConcat);
+      const mapRankRoomPrices = new Map<string, number>();
+      rooms.forEach((room) => {
+        mapRankRoomPrices.set(room.id, rankRoomPrices.get(room.rankRoomId) || 0);
+      })
+      return mapRankRoomPrices;
     } catch (error) {
       throw new InternalServerErrorException((error as Error).message);
     }

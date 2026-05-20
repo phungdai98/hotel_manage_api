@@ -12,6 +12,7 @@ import { CreateRentTicketDto } from './dto/create-rent-ticket.dto';
 import { UpdateRentTicketDto } from './dto/update-rent-ticket.dto';
 import { RentTicketResponse } from './entities/rent-ticket.entity';
 import { StatusRoomEnum } from '../../common/enums/statusRoomEnum';
+import { RankRoomService } from '../rank-room/rank-room.service';
 
 @Injectable()
 export class RentTicketService {
@@ -19,7 +20,8 @@ export class RentTicketService {
     @InjectRepository(RentTicket)
     private rentTicketRepository: Repository<RentTicket>,
     private readonly dataSource: DataSource,
-  ) {}
+    private readonly rankRoomService: RankRoomService,
+  ) { }
 
   async create(
     createRentTicketDto: CreateRentTicketDto,
@@ -29,11 +31,11 @@ export class RentTicketService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const order = await queryRunner.manager.findOne(OrderTicket, {
-        where: { code: createRentTicketDto.orderCode },
-      });
-      if (!order) {
-        throw new NotFoundException('Order Not Found');
+      let order: OrderTicket | null = null
+      if (createRentTicketDto.orderCode) {
+        order = await queryRunner.manager.findOne(OrderTicket, {
+          where: { code: createRentTicketDto.orderCode },
+        });
       }
       const { rents, ...rentTicketData } = createRentTicketDto;
       const rentTicket = queryRunner.manager.create(RentTicket, {
@@ -41,15 +43,18 @@ export class RentTicketService {
         userId: userId,
         dateStart: rentTicketData.checkInDate,
         dateEnd: rentTicketData.checkOutDate,
-        orderTicketId: order.id,
+        orderTicketId: order ? order.id : null,
         isPayed: false,
       });
       const savedRentTicket = await queryRunner.manager.save(rentTicket);
       if (rents && rents.length > 0) {
+        const mapPriceRooms = await this.rankRoomService.findByRankRoomPriceByRoomIds(rents.map((rent) => rent.roomId));
         const rentEntities = rents.map((rent) => {
+          const price = mapPriceRooms.get(rent.roomId) || 0;
           return queryRunner.manager.create(Rent, {
             ...rent,
             rentTicketId: savedRentTicket.id,
+            currentPriceRoom: price,
           });
         });
         await queryRunner.manager.save(rentEntities);

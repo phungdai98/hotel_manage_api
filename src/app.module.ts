@@ -65,7 +65,7 @@ import { UploadModule } from './modules/upload/upload.module';
       database: process.env.DB_NAME,
       // entities: [__dirname + '/**/*.entity{.ts,.js}'],
       autoLoadEntities: true,
-      synchronize: false, // Lưu ý: Chỉ bật true khi dev (tự động tạo bảng)
+      synchronize: true, // Lưu ý: Chỉ bật true khi dev (tự động tạo bảng)
     }),
     TypeOrmModule.forFeature([
       Bill,
@@ -117,4 +117,4 @@ import { UploadModule } from './modules/upload/upload.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

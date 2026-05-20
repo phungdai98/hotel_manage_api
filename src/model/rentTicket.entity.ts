@@ -43,8 +43,8 @@ export class RentTicket {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt!: Date;
 
-  @Column({ name: 'order_ticket_id' })
-  orderTicketId!: string;
+  @Column({ name: 'order_ticket_id', nullable: true })
+  orderTicketId!: string | null;
 
   @OneToOne(() => OrderTicket, (orderTicket) => orderTicket.rentTicket)
   @JoinColumn({ name: 'order_ticket_id' })
