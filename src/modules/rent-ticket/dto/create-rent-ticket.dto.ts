@@ -6,9 +6,11 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  ValidateIf,
   ValidateNested
 } from 'class-validator';
 import { CreateRentTicketDetailDto } from '../../rent/dto/create-rent.dto';
+import { CreateCustomerDto } from 'src/modules/customer/dto/create-customer.dto';
 
 export class CreateRentTicketDto {
   @IsString()
@@ -22,11 +24,19 @@ export class CreateRentTicketDto {
   isPayed: boolean;
 
   @IsUUID()
-  customerId: string;
+  @ValidateIf((obj) => !obj.customer)
+  @IsOptional()
+  customerId?: string;
 
   @IsInt()
   @IsOptional()
   orderCode?: number;
+
+  @Type(() => CreateCustomerDto)
+  @ValidateIf((obj) => !obj.customerId)
+  @IsOptional()
+  @ValidateNested()
+  customer?: CreateCustomerDto;
 
   @Type(() => CreateRentTicketDetailDto)
   @ArrayMinSize(0)

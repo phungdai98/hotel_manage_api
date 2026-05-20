@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   Injectable,
   InternalServerErrorException,
@@ -6,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponse } from 'src/common/entities/typeResponse';
-import { DetailStatus, OrderTicket, Rent, RentTicket } from 'src/model';
+import { Customer, DetailStatus, OrderTicket, Rent, RentTicket } from 'src/model';
 import { DataSource, Repository } from 'typeorm';
 import { CreateRentTicketDto } from './dto/create-rent-ticket.dto';
 import { UpdateRentTicketDto } from './dto/update-rent-ticket.dto';
@@ -27,15 +28,27 @@ export class RentTicketService {
     createRentTicketDto: CreateRentTicketDto,
     userId: string,
   ): Promise<ApiResponse<RentTicketResponse>> {
+    if (!createRentTicketDto.customerId && !createRentTicketDto.customer) {
+      throw new BadRequestException('Customer or customer ID is required');
+    }
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      let order: OrderTicket | null = null
+      let order: OrderTicket | null = null;
+      let customerId: string | null = createRentTicketDto.customerId || null;
       if (createRentTicketDto.orderCode) {
         order = await queryRunner.manager.findOne(OrderTicket, {
           where: { code: createRentTicketDto.orderCode },
         });
+      }
+      if (!customerId) {
+        const customer = await queryRunner.manager.create(Customer, {
+          ...createRentTicketDto.customer,
+        });
+        const savedCustomer = await queryRunner.manager.save(customer);
+        customerId = savedCustomer.id;
       }
       const { rents, ...rentTicketData } = createRentTicketDto;
       const rentTicket = queryRunner.manager.create(RentTicket, {
