@@ -8,13 +8,15 @@ import {
   Delete,
   Query,
   ParseUUIDPipe,
+  Req,
 } from '@nestjs/common';
 import { BillService } from './bill.service';
-import { CreateBillDto } from './dto/create-bill.dto';
+import { CreateBillAndUpdateRentDto, CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { BaseController } from 'src/common/base.controller';
 import { BillResponse } from './entities/bill.entity';
 import { ApiResponse } from 'src/common/entities/typeResponse';
+import { UserAuthResponse } from '../auth/entities/auth.entity';
 
 @Controller('bill')
 export class BillController extends BaseController {
@@ -23,8 +25,11 @@ export class BillController extends BaseController {
   }
 
   @Post()
-  create(@Body() createBillDto: CreateBillDto): Promise<BillResponse> {
-    return this.billService.create(createBillDto);
+
+  create(@Req() req, @Body() createBillDto: CreateBillAndUpdateRentDto): Promise<BillResponse> {
+    const user = req.user as UserAuthResponse;
+    const userId = user.userId;
+    return this.billService.create(createBillDto, userId);
   }
 
   @Get()

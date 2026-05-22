@@ -4,14 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import dayjs from 'dayjs';
 import { ApiResponse } from 'src/common/entities/typeResponse';
 import { DetailService, Rent, RentTicket } from 'src/model';
 import { In, Repository } from 'typeorm';
-import { CalculateRentPriceDto, CalculateRentsPriceDto, CreateRentDto, GetPriceByCodeRentTicketDto } from './dto/create-rent.dto';
+import { CalculateRentsPriceDto, CreateRentDto, GetPriceByCodeRentTicketDto } from './dto/create-rent.dto';
 import { UpdateRentDto } from './dto/update-rent.dto';
 import { RentCalculatePriceResponse, RentResponse } from './entities/rent.entity';
-import { RentTicketResponse } from '../rent-ticket/entities/rent-ticket.entity';
-import dayjs from 'dayjs';
 
 @Injectable()
 export class RentService {
@@ -135,7 +134,7 @@ export class RentService {
       if (!rentTicket) {
         throw new NotFoundException('Rent not found');
       }
-      const rents: Rent[] = await this.rentRepository.find({ where: { rentTicketId: rentTicket.id } });
+      const rents: Rent[] = await this.rentRepository.find({ where: { rentTicketId: rentTicket.id, isPayed: false } });
       const requestCalc: CalculateRentsPriceDto = {
         checkIn: request.checkIn,
         checkOut: request.checkOut,

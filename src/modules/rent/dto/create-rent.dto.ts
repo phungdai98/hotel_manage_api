@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsArray, IsBoolean, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
+import { IsArray, IsBoolean, IsNumber, IsObject, IsOptional, IsString, IsUUID, ValidateNested } from "class-validator";
 
 export class CreateRentDto {
     @IsNumber()
@@ -68,5 +68,18 @@ export class GetPriceByCodeRentTicketDto {
 
     @IsString()
     checkOut: string;
+}
 
+export class RentForBillDto {
+    @IsUUID()
+    rentId: string;
+
+    @IsNumber()
+    priceRoom: number;
+
+    @IsNumber()
+    priceService: number;
+
+    @IsNumber()
+    totalPrice: number;
 }

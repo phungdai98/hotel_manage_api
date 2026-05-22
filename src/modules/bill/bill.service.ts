@@ -5,9 +5,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponse } from 'src/common/entities/typeResponse';
-import { Bill, RentTicket } from 'src/model';
-import { FindOptionsWhere, Like, Repository } from 'typeorm';
-import { CreateBillDto } from './dto/create-bill.dto';
+import { Bill, Rent, RentTicket } from 'src/model';
+import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
+import { DataSource } from 'typeorm/browser';
+import { CreateBillAndUpdateRentDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { BillResponse } from './entities/bill.entity';
 
@@ -16,22 +17,42 @@ export class BillService {
   constructor(
     @InjectRepository(Bill)
     private billRepository: Repository<Bill>,
-    @InjectRepository(RentTicket)
-    private rentTicketRepository: Repository<RentTicket>,
+    private readonly dataSource: DataSource,
   ) { }
 
-  async create(createBillDto: CreateBillDto): Promise<BillResponse> {
+  async create(createBillDto: CreateBillAndUpdateRentDto, userId: string): Promise<BillResponse> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      const checkRentTicket = await this.rentTicketRepository.findOne({
+      const checkRentTicket = await this.dataSource.getRepository(RentTicket).findOne({
         where: { id: createBillDto.rentTicketId },
       });
       if (!checkRentTicket) {
         throw new NotFoundException('Rent ticket not found');
       }
-      const result = await this.billRepository.save(createBillDto);
+      const billCreate = queryRunner.manager.create(Bill, {
+        description: createBillDto.description,
+        rentTicketId: createBillDto.rentTicketId,
+        userId: userId,
+        totalPrice: createBillDto.totalPrice,
+        priceRoom: createBillDto.priceRoom,
+        priceService: createBillDto.priceService,
+      })
+      const result = await queryRunner.manager.save(billCreate);
+      await queryRunner.manager.update(
+        Rent,
+        { id: In(createBillDto.rents.map((rent) => rent.rentId)) },
+        { billId: result.id, isPayed: true }
+      );
+      await queryRunner.commitTransaction();
       return new BillResponse(result);
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException((error as Error).message);
+    }
+    finally {
+      await queryRunner.release();
     }
   }
 
