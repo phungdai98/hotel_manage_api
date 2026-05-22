@@ -4,9 +4,6 @@ export class CreateBillDto {
     @IsString()
     description: string;
 
-    @IsUUID()
-    userId: string;
-
     @IsNumber()
     codeTicketId: number;
 }
