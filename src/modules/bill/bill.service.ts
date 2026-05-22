@@ -6,12 +6,12 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponse } from 'src/common/entities/typeResponse';
 import { Bill, Rent, RentTicket } from 'src/model';
-import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
-import { DataSource } from 'typeorm/browser';
+import { FindOptionsWhere, In, Like, Repository, DataSource } from 'typeorm';
 import { CreateBillAndUpdateRentDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { BillResponse } from './entities/bill.entity';
 import { RentService } from '../rent/rent.service';
+import { RentCalculatePriceResponse } from '../rent/entities/rent.entity';
 
 @Injectable()
 export class BillService {
@@ -33,11 +33,11 @@ export class BillService {
       if (!checkRentTicket) {
         throw new NotFoundException('Rent ticket not found');
       }
-      const rents = await this.rentService.getPriceByCodeRentTicket({ codeRentTicket: createBillDto.codeTicketId, checkIn: createBillDto.checkIn, checkOut: createBillDto.checkOut });
-      const rentsCalc = rents.filter((rent) => createBillDto.rents.includes(rent.roomId));
-      const totalPriceRoom = rentsCalc.reduce((acc, rent) => acc + rent.totalPriceRoom, 0);
-      const totalPriceService = rentsCalc.reduce((acc, rent) => acc + rent.totalPriceService, 0);
-      const totalPrice = totalPriceRoom + totalPriceService;
+      const rents: RentCalculatePriceResponse[] = await this.rentService.getPriceByCodeRentTicket({ codeRentTicket: createBillDto.codeTicketId, checkIn: createBillDto.checkIn, checkOut: createBillDto.checkOut });
+      const rentsCalc: RentCalculatePriceResponse[] = rents.filter((rent) => createBillDto.rents.includes(rent.id));
+      const totalPriceRoom: number = rentsCalc.reduce((acc: number, rent: RentCalculatePriceResponse) => acc + rent.totalPriceRoom, 0);
+      const totalPriceService: number = rentsCalc.reduce((acc: number, rent: RentCalculatePriceResponse) => acc + rent.totalPriceService, 0);
+      const totalPrice: number = totalPriceRoom + totalPriceService;
       const billCreate = queryRunner.manager.create(Bill, {
         description: createBillDto.description,
         rentTicketId: checkRentTicket.id,
@@ -46,7 +46,7 @@ export class BillService {
         priceRoom: totalPriceRoom,
         priceService: totalPriceService,
       })
-      const result = await queryRunner.manager.save(billCreate);
+      const result: Bill = await queryRunner.manager.save(billCreate);
       await queryRunner.manager.update(
         Rent,
         { id: In(createBillDto.rents) },
