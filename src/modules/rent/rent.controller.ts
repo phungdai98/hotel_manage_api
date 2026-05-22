@@ -9,11 +9,11 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { RentService } from './rent.service';
-import { CreateRentDto } from './dto/create-rent.dto';
+import { CreateRentDto, GetPriceByCodeRentTicketDto } from './dto/create-rent.dto';
 import { UpdateRentDto } from './dto/update-rent.dto';
 import { BaseController } from 'src/common/base.controller';
 import { ApiResponse } from 'src/common/entities/typeResponse';
-import { RentResponse } from './entities/rent.entity';
+import { RentCalculatePriceResponse, RentResponse } from './entities/rent.entity';
 
 @Controller('rent')
 export class RentController extends BaseController {
@@ -47,5 +47,10 @@ export class RentController extends BaseController {
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<ApiResponse<null>> {
     return this.rentService.remove(id);
+  }
+
+  @Post('get-calculate-price')
+  getPriceByCodeRentTicket(@Body() request: GetPriceByCodeRentTicketDto): Promise<RentCalculatePriceResponse[]> {
+    return this.rentService.getPriceByCodeRentTicket(request);
   }
 }

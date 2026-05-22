@@ -20,6 +20,15 @@ export class Bill {
   @Column({ name: 'decription' })
   description!: string;
 
+  @Column({ name: 'total_price' })
+  totalPrice!: number;
+
+  @Column({ name: 'price_room' })
+  priceRoom!: number;
+
+  @Column({ name: 'price_service' })
+  priceService!: number;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt!: Date;
 

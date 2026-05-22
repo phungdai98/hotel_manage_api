@@ -8,6 +8,7 @@ export class RentResponse {
   rentTicketId: string;
   roomId: string;
   billId: string | null;
+  roomName?: string;
 
   constructor(data: Rent) {
     this.id = data.id;
@@ -17,5 +18,21 @@ export class RentResponse {
     this.rentTicketId = data.rentTicketId;
     this.roomId = data.roomId;
     this.billId = data.billId || null;
+    this.roomName = data.room?.name;
+  }
+}
+
+export class RentCalculatePriceResponse extends RentResponse {
+  quantityDate: number;
+  totalPriceRoom: number;
+  totalPriceService: number;
+  totalPrice: number;
+
+  constructor(data: Partial<RentCalculatePriceResponse>) {
+    super(data as Rent);
+    this.totalPriceRoom = data.totalPriceRoom || 0;
+    this.totalPriceService = data.totalPriceService || 0;
+    this.quantityDate = data.quantityDate || 0;
+    this.totalPrice = this.totalPriceService + this.totalPriceRoom;
   }
 }

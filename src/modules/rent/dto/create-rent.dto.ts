@@ -1,4 +1,5 @@
-import { IsBoolean, IsNumber, IsObject, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsArray, IsBoolean, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
 
 export class CreateRentDto {
     @IsNumber()
@@ -21,7 +22,7 @@ export class CreateRentDto {
 }
 
 export class CreateRentTicketDetailDto {
-   @IsNumber()
+    @IsNumber()
     surcharge: number;
 
     @IsObject()
@@ -33,4 +34,39 @@ export class CreateRentTicketDetailDto {
 
     @IsString()
     roomId: string;
+}
+
+export class CalculateRentPriceDto {
+    @IsString()
+    roomId: string;
+
+    @IsString()
+    rentTicketId: string;
+}
+
+export class CalculateRentsPriceDto {
+    @IsString()
+    checkIn: string;
+
+    @IsString()
+    checkOut: string;
+
+    @ValidateNested({ each: true })
+    @Type(() => CalculateRentPriceDto)
+    @IsArray()
+    rents: CalculateRentPriceDto[]
+}
+
+
+
+export class GetPriceByCodeRentTicketDto {
+    @IsNumber()
+    codeRentTicket: number;
+
+    @IsString()
+    checkIn: string;
+
+    @IsString()
+    checkOut: string;
+
 }

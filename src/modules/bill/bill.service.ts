@@ -18,7 +18,8 @@ export class BillService {
     private billRepository: Repository<Bill>,
     @InjectRepository(RentTicket)
     private rentTicketRepository: Repository<RentTicket>,
-  ) {}
+  ) { }
+
   async create(createBillDto: CreateBillDto): Promise<BillResponse> {
     try {
       const checkRentTicket = await this.rentTicketRepository.findOne({
