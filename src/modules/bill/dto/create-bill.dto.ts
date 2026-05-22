@@ -1,30 +1,24 @@
-import { Type } from "class-transformer";
-import { IsArray, IsNumber, IsString, IsUUID, ValidateNested } from "class-validator";
-import { RentForBillDto } from "src/modules/rent/dto/create-rent.dto";
+import { IsArray, IsNumber, IsString, IsUUID } from "class-validator";
 
 export class CreateBillDto {
     @IsString()
     description: string;
 
-    @IsNumber()
-    totalPrice: number;
-
-    @IsNumber()
-    priceRoom: number;
-
-    @IsNumber()
-    priceService: number;
-
     @IsUUID()
     userId: string;
 
-    @IsUUID()
-    rentTicketId: string;
+    @IsNumber()
+    codeTicketId: number;
 }
 
 export class CreateBillAndUpdateRentDto extends CreateBillDto {
-    @ValidateNested({ each: true })
-    @Type(() => RentForBillDto)
+    @IsString()
+    checkIn: string;
+
+    @IsString()
+    checkOut: string;
+
     @IsArray()
-    rents: RentForBillDto[];
+    @IsUUID('all', { each: true })
+    rents: string[];
 }

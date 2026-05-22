@@ -11,6 +11,7 @@ import { DataSource } from 'typeorm/browser';
 import { CreateBillAndUpdateRentDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { BillResponse } from './entities/bill.entity';
+import { RentService } from '../rent/rent.service';
 
 @Injectable()
 export class BillService {
@@ -18,6 +19,7 @@ export class BillService {
     @InjectRepository(Bill)
     private billRepository: Repository<Bill>,
     private readonly dataSource: DataSource,
+    private readonly rentService: RentService
   ) { }
 
   async create(createBillDto: CreateBillAndUpdateRentDto, userId: string): Promise<BillResponse> {
@@ -26,23 +28,28 @@ export class BillService {
     await queryRunner.startTransaction();
     try {
       const checkRentTicket = await this.dataSource.getRepository(RentTicket).findOne({
-        where: { id: createBillDto.rentTicketId },
+        where: { code: createBillDto.codeTicketId },
       });
       if (!checkRentTicket) {
         throw new NotFoundException('Rent ticket not found');
       }
+      const rents = await this.rentService.getPriceByCodeRentTicket({ codeRentTicket: createBillDto.codeTicketId, checkIn: createBillDto.checkIn, checkOut: createBillDto.checkOut });
+      const rentsCalc = rents.filter((rent) => createBillDto.rents.includes(rent.roomId));
+      const totalPriceRoom = rentsCalc.reduce((acc, rent) => acc + rent.totalPriceRoom, 0);
+      const totalPriceService = rentsCalc.reduce((acc, rent) => acc + rent.totalPriceService, 0);
+      const totalPrice = totalPriceRoom + totalPriceService;
       const billCreate = queryRunner.manager.create(Bill, {
         description: createBillDto.description,
-        rentTicketId: createBillDto.rentTicketId,
+        rentTicketId: checkRentTicket.id,
         userId: userId,
-        totalPrice: createBillDto.totalPrice,
-        priceRoom: createBillDto.priceRoom,
-        priceService: createBillDto.priceService,
+        totalPrice: totalPrice,
+        priceRoom: totalPriceRoom,
+        priceService: totalPriceService,
       })
       const result = await queryRunner.manager.save(billCreate);
       await queryRunner.manager.update(
         Rent,
-        { id: In(createBillDto.rents.map((rent) => rent.rentId)) },
+        { id: In(createBillDto.rents) },
         { billId: result.id, isPayed: true }
       );
       await queryRunner.commitTransaction();
