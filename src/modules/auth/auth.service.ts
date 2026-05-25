@@ -8,7 +8,7 @@ export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async signIn(email: string, pass: string) {
     const user = await this.userService.findOneWithPassword(email);
@@ -24,7 +24,7 @@ export class AuthService {
       role: user.role,
     };
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      accessToken: await this.jwtService.signAsync(payload),
       email: user.email,
       role: user.role,
       phone: user.phone,
