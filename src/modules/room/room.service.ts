@@ -18,7 +18,7 @@ export class RoomService {
   constructor(
     @InjectRepository(Room)
     private roomRepository: Repository<Room>,
-  ) {}
+  ) { }
   async create(createRoomDto: CreateRoomDto): Promise<ApiResponse<null>> {
     try {
       const room = this.roomRepository.create(createRoomDto);
@@ -114,6 +114,29 @@ export class RoomService {
       })
       .getMany()
       .then((rooms) => rooms.map((room) => new RoomResponse(room)));
+  }
+
+  async getRoomsStatus(currentDate: string): Promise<RoomResponse[]> {
+    try {
+      const currentDateFormat = new Date(currentDate);
+      const rooms = await this.roomRepository.createQueryBuilder('room')
+        .leftJoinAndSelect(
+          'room.detailStatuses',
+          'detailStatus',
+          'detailStatus.dateStart <= :currentDateFormat AND detailStatus.dateEnd > :currentDateFormat',
+        )
+        .setParameters({
+          currentDateFormat,
+        })
+        .getMany();
+
+      return rooms.map((room) => {
+        const activeStatus = room.detailStatuses?.[0]?.status;
+        return new RoomResponse(room, activeStatus);
+      });
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
+    }
   }
 
   async findRoomIdByName(name: string): Promise<RoomResponse> {

@@ -44,6 +44,13 @@ export class RoomController extends BaseController {
     );
   }
 
+  @Get('status')
+  getRoomsStatus(
+    @Query('currentDate') currentDate: string,
+  ): Promise<RoomResponse[]> {
+    return this.roomService.getRoomsStatus(currentDate);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string): Promise<RoomResponse> {
     return this.roomService.findOne(id);

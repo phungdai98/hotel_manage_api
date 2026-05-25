@@ -1,3 +1,4 @@
+import { StatusRoomEnum } from 'src/common/enums/statusRoomEnum';
 import { Room } from 'src/model';
 
 export class RoomResponse {
@@ -6,11 +7,13 @@ export class RoomResponse {
   floor: string;
   rankRoomId: string;
   typeRoomId: string;
+  status: StatusRoomEnum;
 
-  constructor(data: Room) {
+  constructor(data: Room, status?: StatusRoomEnum) {
     this.id = data.id;
     this.name = data.name;
     this.floor = data.floor;
     this.rankRoomId = data.rankRoomId;
+    this.status = status || StatusRoomEnum.RESERVED;
   }
 }
