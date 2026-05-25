@@ -5,13 +5,14 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponse } from 'src/common/entities/typeResponse';
-import { Bill, Rent, RentTicket } from 'src/model';
+import { Bill, DetailStatus, Rent, RentTicket } from 'src/model';
 import { FindOptionsWhere, In, Like, Repository, DataSource } from 'typeorm';
 import { CreateBillAndUpdateRentDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { BillResponse } from './entities/bill.entity';
 import { RentService } from '../rent/rent.service';
 import { RentCalculatePriceResponse } from '../rent/entities/rent.entity';
+import { StatusRoomEnum } from 'src/common/enums/statusRoomEnum';
 
 @Injectable()
 export class BillService {
@@ -51,6 +52,14 @@ export class BillService {
         Rent,
         { id: In(createBillDto.rents) },
         { billId: result.id, isPayed: true }
+      );
+      await queryRunner.manager.update(
+        DetailStatus,
+        {
+          roomId: In(rentsCalc.map(rent => rent.roomId)),
+          status: StatusRoomEnum.OCCUPIED,
+        },
+        { status: StatusRoomEnum.CHECKED_OUT }
       );
       await queryRunner.commitTransaction();
       return new BillResponse(result);
