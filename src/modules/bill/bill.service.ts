@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponse } from 'src/common/entities/typeResponse';
-import { Bill, DetailStatus, Rent, RentTicket } from 'src/model';
+import { Bill, DetailStatus, OrderTicket, Rent, RentTicket } from 'src/model';
 import { FindOptionsWhere, In, Like, Repository, DataSource } from 'typeorm';
 import { CreateBillAndUpdateRentDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
@@ -13,6 +13,7 @@ import { BillResponse } from './entities/bill.entity';
 import { RentService } from '../rent/rent.service';
 import { RentCalculatePriceResponse } from '../rent/entities/rent.entity';
 import { StatusRoomEnum } from 'src/common/enums/statusRoomEnum';
+import { OrderTicketStatusEnum } from 'src/common/enums/orderTicketStatus.enum';
 
 @Injectable()
 export class BillService {
@@ -60,6 +61,18 @@ export class BillService {
           status: StatusRoomEnum.OCCUPIED,
         },
         { status: StatusRoomEnum.CHECKED_OUT }
+      );
+      if (checkRentTicket.orderTicketId) {
+        await queryRunner.manager.update(
+          OrderTicket,
+          { id: checkRentTicket.orderTicketId },
+          { status: OrderTicketStatusEnum.CHECKED_OUT }
+        );
+      }
+      await queryRunner.manager.update(
+        Rent,
+        { id: In(createBillDto.rents) },
+        { billId: result.id, isPayed: true }
       );
       await queryRunner.commitTransaction();
       return new BillResponse(result);

@@ -6,7 +6,6 @@ export class RoomResponse {
   name: string;
   floor: string;
   rankRoomId: string;
-  typeRoomId: string;
   status: StatusRoomEnum;
 
   constructor(data: Room, status?: StatusRoomEnum) {

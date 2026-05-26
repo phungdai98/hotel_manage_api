@@ -14,6 +14,7 @@ import { UpdateRentTicketDto } from './dto/update-rent-ticket.dto';
 import { RentTicketResponse } from './entities/rent-ticket.entity';
 import { StatusRoomEnum } from '../../common/enums/statusRoomEnum';
 import { RankRoomService } from '../rank-room/rank-room.service';
+import { OrderTicketStatusEnum } from 'src/common/enums/orderTicketStatus.enum';
 
 @Injectable()
 export class RentTicketService {
@@ -80,6 +81,9 @@ export class RentTicketService {
             rentTicketId: savedRentTicket.id,
           });
         });
+        if (order && order.id) {
+          await queryRunner.manager.update(OrderTicket, { id: order.id }, { status: OrderTicketStatusEnum.CHECKED_IN });
+        }
         await queryRunner.manager.save(statusRoom);
       }
       await queryRunner.commitTransaction();
