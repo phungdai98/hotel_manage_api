@@ -1,19 +1,21 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
 } from '@nestjs/common';
-import { OrderTicketService } from './order-ticket.service';
-import { CreateOrderTicketDto } from './dto/create-order-ticket.dto';
-import { UpdateOrderTicketDto } from './dto/update-order-ticket.dto';
 import { BaseController } from 'src/common/base.controller';
 import { ApiResponse } from 'src/common/entities/typeResponse';
+import { CreateOrderTicketDto } from './dto/create-order-ticket.dto';
+import { ReqFindAllOrderTicketDto } from './dto/req-order-ticket.dto';
+import { UpdateOrderTicketDto } from './dto/update-order-ticket.dto';
 import { OrderTicketResponse } from './entities/order-ticket.entity';
+import { OrderTicketService } from './order-ticket.service';
 
 @Controller('order-ticket')
 export class OrderTicketController extends BaseController {
@@ -29,8 +31,10 @@ export class OrderTicketController extends BaseController {
   }
 
   @Get()
-  findAll(): Promise<OrderTicketResponse[]> {
-    return this.orderTicketService.findAll();
+  findAll(
+    @Query() query: ReqFindAllOrderTicketDto,
+  ): Promise<OrderTicketResponse[]> {
+    return this.orderTicketService.findAll(query);
   }
 
   @Get(':id')

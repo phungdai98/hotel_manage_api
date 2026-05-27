@@ -7,9 +7,10 @@ import { CreateOrderTicketDto } from './dto/create-order-ticket.dto';
 import { UpdateOrderTicketDto } from './dto/update-order-ticket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderTicket, DetailOrderTicket } from 'src/model';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, Like, Repository } from 'typeorm';
 import { OrderTicketResponse } from './entities/order-ticket.entity';
 import { ApiResponse } from 'src/common/entities/typeResponse';
+import { ReqFindAllOrderTicketDto } from './dto/req-order-ticket.dto';
 
 @Injectable()
 export class OrderTicketService {
@@ -61,11 +62,44 @@ export class OrderTicketService {
     }
   }
 
-  async findAll(): Promise<OrderTicketResponse[]> {
+  async findAll(req: ReqFindAllOrderTicketDto): Promise<OrderTicketResponse[]> {
     try {
-      const result = await this.orderTicketRepository.find({
-        relations: ['detailOrderTickets'],
-      });
+      const query = this.orderTicketRepository
+        .createQueryBuilder('orderTicket')
+        .leftJoinAndSelect(
+          'orderTicket.detailOrderTickets',
+          'detailOrderTicket',
+        )
+        .leftJoinAndSelect('orderTicket.customer', 'customer')
+        .take(req.limit)
+        .skip((req.page - 1) * req.limit)
+        .orderBy('orderTicket.code', 'DESC');
+
+      if (req.search) {
+        if (!isNaN(Number(req.search))) {
+          query.andWhere('orderTicket.code = :code', {
+            code: Number(req.search),
+          });
+        } else {
+          query.andWhere('customer.name LIKE :name', {
+            name: `%${req.search}%`,
+          });
+        }
+      }
+      if (req.startDate) {
+        query.andWhere('orderTicket.dateStart >= :dateStart', {
+          dateStart: req.startDate,
+        });
+      }
+      if (req.endDate) {
+        query.andWhere('orderTicket.dateEnd <= :dateEnd', {
+          dateEnd: req.endDate,
+        });
+      }
+      if (req.status) {
+        query.andWhere('orderTicket.status = :status', { status: req.status });
+      }
+      const result = await query.getMany();
       return result.map((rs) => new OrderTicketResponse(rs));
     } catch (error) {
       throw new InternalServerErrorException((error as Error).message);

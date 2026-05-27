@@ -116,17 +116,19 @@ export class RoomService {
       .then((rooms) => rooms.map((room) => new RoomResponse(room)));
   }
 
-  async getRoomsStatus(currentDate: string): Promise<RoomResponse[]> {
+  async getRoomsStatus(startDate: string, endDate: string): Promise<RoomResponse[]> {
     try {
-      const currentDateFormat = new Date(currentDate);
+      const startDateForma = new Date(startDate);
+      const endDateForma = new Date(endDate);
       const rooms = await this.roomRepository.createQueryBuilder('room')
         .leftJoinAndSelect(
           'room.detailStatuses',
           'detailStatus',
-          'detailStatus.dateStart <= :currentDateFormat AND detailStatus.dateEnd > :currentDateFormat',
+          'detailStatus.dateStart <= :endDateForma AND detailStatus.dateEnd > :startDateForma',
         )
         .setParameters({
-          currentDateFormat,
+          startDateForma,
+          endDateForma
         })
         .getMany();
 

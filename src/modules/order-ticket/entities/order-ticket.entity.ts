@@ -1,5 +1,6 @@
 import { OrderTicket } from 'src/model';
 import { DetailOrderTicketResponse } from '../../detail-order-ticket/entities/detail-order-ticket.entity';
+import { CustomerResponse } from 'src/modules/customer/entities/customer.entity';
 
 export class OrderTicketResponse {
   id: string;
@@ -11,6 +12,7 @@ export class OrderTicketResponse {
   userId: string | null;
   deposit: number;
   detailOrderTickets: DetailOrderTicketResponse[];
+  customer?: CustomerResponse | null;
 
   constructor(orderTicket: OrderTicket) {
     this.id = orderTicket.id;
@@ -26,6 +28,8 @@ export class OrderTicketResponse {
           (detail) => new DetailOrderTicketResponse(detail),
         )
       : [];
+    this.customer = orderTicket.customer
+      ? new CustomerResponse(orderTicket.customer)
+      : null;
   }
 }
-
