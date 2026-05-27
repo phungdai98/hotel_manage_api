@@ -52,6 +52,14 @@ export class OrderTicketController extends BaseController {
     return this.orderTicketService.update(id, updateOrderTicketDto);
   }
 
+  @Patch(':id/status')
+  updateStatus(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() body: { status: string },
+  ): Promise<ApiResponse<null>> {
+    return this.orderTicketService.updateStatus(id, body.status);
+  }
+
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<ApiResponse<null>> {
     return this.orderTicketService.remove(id);

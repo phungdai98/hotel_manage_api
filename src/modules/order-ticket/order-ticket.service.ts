@@ -145,6 +145,26 @@ export class OrderTicketService {
     }
   }
 
+  async updateStatus(id: string, status: string): Promise<ApiResponse<null>> {
+    try {
+      const result = await this.orderTicketRepository.findOne({
+        where: { id: id },
+      });
+      if (!result) {
+        throw new NotFoundException(`Order ticket with ID ${id} not found`);
+      }
+      await this.orderTicketRepository.update(id, { status: status });
+      return new ApiResponse(
+        true,
+        null,
+        'Order ticket updated successfully',
+        200,
+      );
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
+
   async remove(id: string): Promise<ApiResponse<null>> {
     try {
       const result = await this.orderTicketRepository.findOne({
