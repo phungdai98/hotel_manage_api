@@ -106,15 +106,15 @@ export class OrderTicketService {
     }
   }
 
-  async findOne(id: string): Promise<OrderTicketResponse> {
+  async findOne(code: number): Promise<OrderTicketResponse> {
     try {
       const result = await this.orderTicketRepository.findOne({
-        where: { id: id },
-        relations: ['detailOrderTickets'],
+        where: { code: code },
+        relations: ['detailOrderTickets', 'customer'],
       });
 
       if (!result) {
-        throw new NotFoundException(`Order ticket with ID ${id} not found`);
+        throw new NotFoundException(`Order ticket with Code ${code} not found`);
       }
       return new OrderTicketResponse(result);
     } catch (error) {

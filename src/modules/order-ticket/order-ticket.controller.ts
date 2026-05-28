@@ -5,8 +5,8 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
-  Patch,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
@@ -37,14 +37,12 @@ export class OrderTicketController extends BaseController {
     return this.orderTicketService.findAll(query);
   }
 
-  @Get(':id')
-  findOne(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<OrderTicketResponse | null> {
-    return this.orderTicketService.findOne(id);
+  @Get(':code')
+  findOne(@Param('code') code: string): Promise<OrderTicketResponse | null> {
+    return this.orderTicketService.findOne(Number(code));
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateOrderTicketDto: UpdateOrderTicketDto,
@@ -52,7 +50,7 @@ export class OrderTicketController extends BaseController {
     return this.orderTicketService.update(id, updateOrderTicketDto);
   }
 
-  @Patch(':id/status')
+  @Put(':id/status')
   updateStatus(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: { status: string },
