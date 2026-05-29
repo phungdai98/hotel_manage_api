@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -13,7 +22,9 @@ export class CustomerController extends BaseController {
   }
 
   @Post()
-  create(@Body() createCustomerDto: CreateCustomerDto): Promise<ApiResponse<null>> {
+  create(
+    @Body() createCustomerDto: CreateCustomerDto,
+  ): Promise<CustomerResponse> {
     return this.customerService.create(createCustomerDto);
   }
 
@@ -31,8 +42,16 @@ export class CustomerController extends BaseController {
     return this.customerService.findOne(id);
   }
 
+  @Get('id-card/:idCard')
+  findOneByIdCard(@Param('idCard') idCard: string): Promise<CustomerResponse> {
+    return this.customerService.findOneByIdCard(idCard);
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto): Promise<ApiResponse<null>> {
+  update(
+    @Param('id') id: string,
+    @Body() updateCustomerDto: UpdateCustomerDto,
+  ): Promise<ApiResponse<null>> {
     return this.customerService.update(id, updateCustomerDto);
   }
 

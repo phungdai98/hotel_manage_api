@@ -19,11 +19,11 @@ export class CustomerService {
   ) {}
   async create(
     createCustomerDto: CreateCustomerDto,
-  ): Promise<ApiResponse<null>> {
+  ): Promise<CustomerResponse> {
     try {
       const customer = this.customerRepository.create(createCustomerDto);
-      await this.customerRepository.save(customer);
-      return new ApiResponse(true, null, 'Customer created successfully', 201);
+      const savedCustomer = await this.customerRepository.save(customer);
+      return new CustomerResponse(savedCustomer);
     } catch (error) {
       throw new InternalServerErrorException((error as Error).message);
     }
@@ -56,6 +56,24 @@ export class CustomerService {
       }
       return new CustomerResponse(result);
     } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
+
+  async findOneByIdCard(idCard: string): Promise<CustomerResponse> {
+    try {
+      const result = await this.customerRepository.findOne({
+        where: { idCard: idCard },
+      });
+      if (!result) {
+        throw new NotFoundException('Customer not found');
+      }
+      return new CustomerResponse(result);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error; // giữ nguyên 404
+      }
+
       throw new InternalServerErrorException((error as Error).message);
     }
   }

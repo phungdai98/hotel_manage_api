@@ -4,6 +4,7 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { DetailCustomerAt } from './detailCustomerAt.entity';
@@ -11,6 +12,7 @@ import { OrderTicket } from './orderTicket.entity';
 import { RentTicket } from './rentTicket.entity';
 
 @Entity('customer')
+@Unique(['idCard', 'phone'])
 export class Customer {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

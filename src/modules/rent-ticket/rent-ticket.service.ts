@@ -7,7 +7,14 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponse } from 'src/common/entities/typeResponse';
-import { Customer, DetailStatus, OrderTicket, Rent, RentTicket } from 'src/model';
+import {
+  Customer,
+  DetailCustomerAt,
+  DetailStatus,
+  OrderTicket,
+  Rent,
+  RentTicket,
+} from 'src/model';
 import { DataSource, Repository } from 'typeorm';
 import { CreateRentTicketDto } from './dto/create-rent-ticket.dto';
 import { UpdateRentTicketDto } from './dto/update-rent-ticket.dto';
@@ -23,7 +30,7 @@ export class RentTicketService {
     private rentTicketRepository: Repository<RentTicket>,
     private readonly dataSource: DataSource,
     private readonly rankRoomService: RankRoomService,
-  ) { }
+  ) {}
 
   async create(
     createRentTicketDto: CreateRentTicketDto,
@@ -52,6 +59,7 @@ export class RentTicketService {
         customerId = savedCustomer.id;
       }
       const { rents, ...rentTicketData } = createRentTicketDto;
+
       const rentTicket = queryRunner.manager.create(RentTicket, {
         customerId: customerId,
         userId: userId,
@@ -62,7 +70,10 @@ export class RentTicketService {
       });
       const savedRentTicket = await queryRunner.manager.save(rentTicket);
       if (rents && rents.length > 0) {
-        const mapPriceRooms = await this.rankRoomService.findByRankRoomPriceByRoomIds(rents.map((rent) => rent.roomId));
+        const mapPriceRooms =
+          await this.rankRoomService.findByRankRoomPriceByRoomIds(
+            rents.map((rent) => rent.roomId),
+          );
         const rentEntities = rents.map((rent) => {
           const price = mapPriceRooms.get(rent.roomId) || 0;
           return queryRunner.manager.create(Rent, {
@@ -71,7 +82,17 @@ export class RentTicketService {
             currentPriceRoom: price,
           });
         });
-        await queryRunner.manager.save(rentEntities);
+        const savedRents = await queryRunner.manager.save(rentEntities);
+        const customerAds = savedRents.map((rent, index) => {
+          const customerAdId = rents[index].customerId;
+          return queryRunner.manager.create(DetailCustomerAt, {
+            rentId: rent.id,
+            customerId: customerAdId,
+            decription: 'Customer',
+          });
+        });
+        await queryRunner.manager.save(customerAds);
+
         const statusRoom = rents.map((rent) => {
           return queryRunner.manager.create(DetailStatus, {
             roomId: rent.roomId,
@@ -82,7 +103,11 @@ export class RentTicketService {
           });
         });
         if (order && order.id) {
-          await queryRunner.manager.update(OrderTicket, { id: order.id }, { status: OrderTicketStatusEnum.CHECKED_IN });
+          await queryRunner.manager.update(
+            OrderTicket,
+            { id: order.id },
+            { status: OrderTicketStatusEnum.CHECKED_IN },
+          );
         }
         await queryRunner.manager.save(statusRoom);
       }

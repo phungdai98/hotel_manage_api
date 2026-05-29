@@ -1,85 +1,96 @@
-import { Type } from "class-transformer";
-import { IsArray, IsBoolean, IsNumber, IsObject, IsOptional, IsString, IsUUID, ValidateNested } from "class-validator";
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
+import { CreateCustomerDto } from 'src/modules/customer/dto/create-customer.dto';
 
 export class CreateRentDto {
-    @IsNumber()
-    surcharge: number;
+  @IsNumber()
+  surcharge: number;
 
-    @IsString()
-    reason: Record<string, string>;
+  @IsString()
+  reason: Record<string, string>;
 
-    @IsBoolean()
-    isPayed: boolean;
+  @IsBoolean()
+  isPayed: boolean;
 
-    @IsString()
-    rentTicketId: string;
+  @IsString()
+  rentTicketId: string;
 
-    @IsString()
-    roomId: string;
+  @IsString()
+  roomId: string;
 
-    @IsString()
-    billId: string;
+  @IsString()
+  billId: string;
 }
 
 export class CreateRentTicketDetailDto {
-    @IsNumber()
-    surcharge: number;
+  @IsNumber()
+  surcharge: number;
 
-    @IsObject()
-    @IsOptional()
-    reason: Record<string, string>;
+  @IsObject()
+  @IsOptional()
+  reason: Record<string, string>;
 
-    @IsBoolean()
-    isPayed: boolean;
+  @IsBoolean()
+  isPayed: boolean;
 
-    @IsString()
-    roomId: string;
+  @IsString()
+  roomId: string;
+
+  @IsUUID()
+  customerId?: string;
 }
 
 export class CalculateRentPriceDto {
-    @IsString()
-    roomId: string;
+  @IsString()
+  roomId: string;
 
-    @IsString()
-    rentTicketId: string;
+  @IsString()
+  rentTicketId: string;
 }
 
 export class CalculateRentsPriceDto {
-    @IsString()
-    checkIn: string;
+  @IsString()
+  checkIn: string;
 
-    @IsString()
-    checkOut: string;
+  @IsString()
+  checkOut: string;
 
-    @ValidateNested({ each: true })
-    @Type(() => CalculateRentPriceDto)
-    @IsArray()
-    rents: CalculateRentPriceDto[]
+  @ValidateNested({ each: true })
+  @Type(() => CalculateRentPriceDto)
+  @IsArray()
+  rents: CalculateRentPriceDto[];
 }
 
-
-
 export class GetPriceByCodeRentTicketDto {
-    @IsNumber()
-    codeRentTicket: number;
+  @IsNumber()
+  codeRentTicket: number;
 
-    @IsString()
-    checkIn: string;
+  @IsString()
+  checkIn: string;
 
-    @IsString()
-    checkOut: string;
+  @IsString()
+  checkOut: string;
 }
 
 export class RentForBillDto {
-    @IsUUID()
-    rentId: string;
+  @IsUUID()
+  rentId: string;
 
-    @IsNumber()
-    priceRoom: number;
+  @IsNumber()
+  priceRoom: number;
 
-    @IsNumber()
-    priceService: number;
+  @IsNumber()
+  priceService: number;
 
-    @IsNumber()
-    totalPrice: number;
+  @IsNumber()
+  totalPrice: number;
 }
