@@ -1,4 +1,5 @@
 import { RentTicket } from 'src/model';
+import { RentResponse } from 'src/modules/rent/entities/rent.entity';
 
 export class RentTicketResponse {
   id: string;
@@ -9,6 +10,7 @@ export class RentTicketResponse {
   customerId: string;
   userId: string;
   orderTicketId: string;
+  rents: RentResponse[] | null;
 
   constructor(data: RentTicket) {
     this.id = data?.id || '';
@@ -19,5 +21,6 @@ export class RentTicketResponse {
     this.customerId = data?.customerId || '';
     this.userId = data?.userId || '';
     this.orderTicketId = data?.orderTicketId || '';
+    this.rents = data?.rents?.map((rent) => new RentResponse(rent)) || null;
   }
 }

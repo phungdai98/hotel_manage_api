@@ -28,6 +28,10 @@ export class RentTicketService {
   constructor(
     @InjectRepository(RentTicket)
     private rentTicketRepository: Repository<RentTicket>,
+    @InjectRepository(OrderTicket)
+    private orderTicketRepository: Repository<OrderTicket>,
+    @InjectRepository(Rent)
+    private rentRepository: Repository<Rent>,
     private readonly dataSource: DataSource,
     private readonly rankRoomService: RankRoomService,
   ) {}
@@ -195,6 +199,37 @@ export class RentTicketService {
         200,
       );
     } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
+
+  async findRentTicketByOrderCode(
+    orderCode: number,
+  ): Promise<RentTicketResponse> {
+    try {
+      const orderTicket = await this.orderTicketRepository.findOne({
+        where: { code: orderCode },
+      });
+      if (!orderTicket) {
+        throw new NotFoundException('Order ticket not found');
+      }
+      const rentTicket = await this.rentTicketRepository.findOne({
+        where: { orderTicketId: orderTicket.id },
+        relations: ['customer'],
+      });
+      if (!rentTicket) {
+        throw new NotFoundException('Rent ticket not found');
+      }
+      const rents = await this.rentRepository.find({
+        where: { rentTicketId: rentTicket.id },
+        relations: ['room', 'detailCustomerAts'],
+      });
+      rentTicket.rents = rents;
+      return new RentTicketResponse(rentTicket);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
       throw new InternalServerErrorException((error as Error).message);
     }
   }

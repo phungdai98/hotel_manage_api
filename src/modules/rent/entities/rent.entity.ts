@@ -1,4 +1,5 @@
 import { Rent } from 'src/model';
+import { DetailCustomerAtResponse } from 'src/modules/detail-customer-at/entities/detail-customer-at.entity';
 
 export class RentResponse {
   id: string;
@@ -9,6 +10,7 @@ export class RentResponse {
   roomId: string;
   billId: string | null;
   roomName?: string;
+  detailCustomerAts?: DetailCustomerAtResponse[] | null;
 
   constructor(data: Rent) {
     this.id = data.id;
@@ -19,6 +21,10 @@ export class RentResponse {
     this.roomId = data.roomId;
     this.billId = data.billId || null;
     this.roomName = data.room?.name;
+    this.detailCustomerAts =
+      data.detailCustomerAts?.map(
+        (detailCustomerAt) => new DetailCustomerAtResponse(detailCustomerAt),
+      ) || null;
   }
 }
 

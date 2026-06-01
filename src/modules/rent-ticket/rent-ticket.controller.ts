@@ -58,4 +58,9 @@ export class RentTicketController extends BaseController {
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<ApiResponse<null>> {
     return this.rentTicketService.remove(id);
   }
+
+  @Get('findByOrderCode/:code')
+  findByOrderCode(@Param('code') code: string): Promise<RentTicketResponse> {
+    return this.rentTicketService.findRentTicketByOrderCode(+code);
+  }
 }

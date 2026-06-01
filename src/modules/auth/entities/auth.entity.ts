@@ -1,8 +1,10 @@
-import { User } from "src/model";
-
 export class RequestLogin {
   username!: string;
   password!: string;
+}
+
+export class RequestRefresh {
+  refreshToken!: string;
 }
 
 export class UserAuthResponse {
