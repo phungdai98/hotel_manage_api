@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
 import { DeleteResult, UpdateResult } from 'typeorm';
@@ -14,6 +15,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponse } from './entities/user.entity';
 import { UsersService } from './users.service';
+import { RolesGuard } from '../role/roles.guard';
+import { Roles } from '../role/decorators/roles.decorator';
+import { Role } from 'src/common/enums/roleEnum';
 
 @Controller('user')
 export class UserController extends BaseController {
@@ -42,6 +46,8 @@ export class UserController extends BaseController {
   }
 
   @Get()
+  @UseGuards(RolesGuard) // CHỈ CẦN gọi RolesGuard ở đây
+  @Roles(Role.ADMIN)
   async findAll(): Promise<UserResponse[] | null> {
     return this.userService.findAll();
   }
