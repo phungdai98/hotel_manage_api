@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -10,12 +11,15 @@ import { Customer, DetailOrderTicket, OrderTicket } from 'src/model';
 import { DataSource, Repository } from 'typeorm';
 import { OrderTicketResponse } from '../order-ticket/entities/order-ticket.entity';
 import { OrderDto } from './dto/order.dto';
+import { ClientProxy } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(OrderTicket)
     private readonly orderTicketRepository: Repository<OrderTicket>,
+    @Inject('MAIL_SERVICE') private readonly mailClient: ClientProxy,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -55,6 +59,23 @@ export class OrderService {
       }
 
       await queryRunner.commitTransaction();
+
+      // Debug: ensure connection is established first
+      console.log('[Order] Connecting to RabbitMQ...');
+      await this.mailClient.connect();
+      console.log('[Order] Connected. Emitting booking_confirmed...');
+
+      const payload = {
+        email: customer.phone,
+        name: customer.name,
+        bookingId: orderTicket.code,
+      };
+      console.log('[Order] Payload:', JSON.stringify(payload));
+
+      await lastValueFrom(
+        this.mailClient.emit('booking_confirmed', payload),
+      );
+      console.log('[Order] Message emitted successfully!');
 
       // Reload order with details for the response
       const result = await this.orderTicketRepository.findOne({

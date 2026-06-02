@@ -17,8 +17,8 @@ export class OrderTicketResponse {
   constructor(orderTicket: OrderTicket) {
     this.id = orderTicket.id;
     this.code = orderTicket.code;
-    this.dateStart = orderTicket.dateStart.toISOString();
-    this.dateEnd = orderTicket.dateEnd.toISOString();
+    this.dateStart = String(orderTicket.dateStart);
+    this.dateEnd = String(orderTicket.dateEnd);
     this.status = orderTicket.status;
     this.customerId = orderTicket.customerId;
     this.userId = orderTicket.userId ?? null;
