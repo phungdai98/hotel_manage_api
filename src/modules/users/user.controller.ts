@@ -26,6 +26,8 @@ export class UserController extends BaseController {
   }
 
   @Post()
+  @UseGuards(RolesGuard) // CHỈ CẦN gọi RolesGuard ở đây
+  @Roles(Role.ADMIN)
   async create(
     @Body() createUserDto: CreateUserDto,
   ): Promise<UserResponse | null> {

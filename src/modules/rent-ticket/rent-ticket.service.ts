@@ -222,7 +222,7 @@ export class RentTicketService {
       }
       const rents = await this.rentRepository.find({
         where: { rentTicketId: rentTicket.id },
-        relations: ['room', 'detailCustomerAts'],
+        relations: ['room', 'detailCustomerAts', 'detailCustomerAts.customer'],
       });
       rentTicket.rents = rents;
       return new RentTicketResponse(rentTicket);

@@ -17,7 +17,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:3000'], // Cổng Next.js mặc định
+    origin: ['http://localhost:5174', 'http://localhost:3000'], // Cổng Next.js mặc định
     credentials: true, // Cho phép gửi cookies và headers
   });
 
